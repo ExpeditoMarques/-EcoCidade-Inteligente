@@ -126,7 +126,7 @@ body{background:#f3f9fc;color:var(--ink)}
 </section>
 <section class="view" id="view-registrar">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Faça sua parte</div><h2 style="font-size:25px;margin-top:5px">Registrar ocorrência</h2><p>Ajude a identificar problemas ambientais na sua região.</p></div></div>
-  <div class="notice">🔒 Este protótipo salva os relatos apenas no navegador deste dispositivo. Ele ainda não envia denúncias a órgãos públicos nem compartilha dados com outros usuários.</div>
+  <div class="notice">Entre ou crie uma conta para compartilhar relatos com a comunidade. Os registros não são enviados automaticamente a órgãos públicos.</div>
   <section class="panel"><form id="report-form" class="form-grid">
     <div class="field"><label for="category">Tipo de problema *</label><select id="category" required><option value="">Selecione uma categoria</option><option>Descarte irregular de lixo</option><option>Queimadas ou fumaça</option><option>Desperdício de água</option><option>Poluição de rio ou córrego</option><option>Esgoto ou saneamento</option><option>Falta de árvores ou área verde</option><option>Poluição do ar</option><option>Outro problema ambiental</option></select></div>
     <div class="field"><label for="place">Local aproximado</label><input id="place" maxlength="120" placeholder="Ex.: rua, bairro ou ponto de referência"></div>
@@ -138,8 +138,8 @@ body{background:#f3f9fc;color:var(--ink)}
   </form></section>
 </section>
 <section class="view" id="view-ocorrencias">
-  <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Acompanhe sua comunidade</div><h2 style="font-size:25px;margin-top:5px">Ocorrências registradas</h2><p>Gerencie os relatos salvos neste dispositivo.</p></div><button class="secondary" id="export-reports">Exportar dados</button></div>
-  <div class="notice">Os relatos abaixo são locais, não são registros oficiais e só aparecem neste navegador.</div><div id="report-list"></div>
+  <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Acompanhe sua comunidade</div><h2 style="font-size:25px;margin-top:5px">Ocorrências registradas</h2><p>Acompanhe relatos compartilhados no Firestore.</p></div><button class="secondary" id="export-reports">Exportar dados</button></div>
+  <div class="notice">Os relatos compartilhados ficam no Firestore. Relatos antigos locais podem permanecer neste dispositivo.</div><div id="report-list"></div>
   <button class="secondary" id="clear-reports" type="button">Apagar todos os relatos locais</button>
 </section>
 <section class="view" id="view-mapa">
@@ -191,8 +191,8 @@ body{background:#f3f9fc;color:var(--ink)}
     <article class="stat"><div class="stat-top">Em andamento <span class="stat-icon">🛠️</span></div><div class="stat-num" id="admin-progress">—</div><div class="stat-foot">Em tratamento</div></article>
     <article class="stat"><div class="stat-top">Resolvidas <span class="stat-icon">✅</span></div><div class="stat-num" id="admin-resolved">—</div><div class="stat-foot">Concluídas</div></article>
   </div>
-  <section class="panel" style="margin-bottom:16px"><div class="panel-head"><div><h2>Ocorrências da comunidade</h2><span class="muted">Dados compartilhados do Supabase</span></div><select id="admin-filter" aria-label="Filtrar ocorrências" style="padding:9px;border:1px solid var(--line);border-radius:9px"><option value="">Todos os status</option><option>Pendente</option><option>Em análise</option><option>Em andamento</option><option>Resolvida</option></select></div><div id="admin-report-list"><div class="empty">Carregando ocorrências…</div></div></section>
-  <section class="panel"><div class="panel-head"><div><h2>Contas cadastradas</h2><span class="muted">Perfis que existem na tabela pública de perfis</span></div></div><div id="admin-user-list" class="muted">Carregando perfis…</div><p class="muted" style="margin-top:12px">Por privacidade, este painel não exibe senhas nem dados secretos de autenticação.</p></section>
+  <section class="panel" style="margin-bottom:16px"><div class="panel-head"><div><h2>Ocorrências da comunidade</h2><span class="muted">Dados compartilhados do Firebase</span></div><select id="admin-filter" aria-label="Filtrar ocorrências" style="padding:9px;border:1px solid var(--line);border-radius:9px"><option value="">Todos os status</option><option>Pendente</option><option>Em análise</option><option>Em andamento</option><option>Resolvida</option></select></div><div id="admin-report-list"><div class="empty">Carregando ocorrências…</div></div></section>
+  <section class="panel"><div class="panel-head"><div><h2>Contas cadastradas</h2><span class="muted">Perfis armazenados no Firebase</span></div></div><div id="admin-user-list" class="muted">Carregando perfis…</div><p class="muted" style="margin-top:12px">Por privacidade, este painel não exibe senhas nem dados secretos de autenticação.</p></section>
 </section>
 <section class="view" id="view-perfil">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Sua participação importa</div><h2 style="font-size:25px;margin-top:5px">Meu perfil</h2><p>Personalize como você aparece neste dispositivo.</p></div></div>
@@ -205,7 +205,7 @@ body{background:#f3f9fc;color:var(--ink)}
     <div class="field full"><span id="auth-message" class="muted" aria-live="polite">Conectando ao serviço de autenticação…</span></div>
   </form>
 </section>
-<section class="panel"><form id="profile-form" class="form-grid"><div class="field"><label for="profile-name">Seu nome</label><input id="profile-name" maxlength="80" placeholder="Como podemos chamar você?"></div><div class="field"><label for="profile-city">Cidade ou comunidade (opcional)</label><input id="profile-city" maxlength="100" placeholder="Sua cidade"></div><div class="field full"><button class="primary" type="submit">Salvar perfil</button><span id="profile-message" class="muted" aria-live="polite"></span></div></form><div class="notice" style="margin-top:18px;margin-bottom:0">Seu nome e cidade continuam salvos neste navegador. A conta usa autenticação do Supabase; os relatos locais existentes não serão apagados nem enviados automaticamente.</div></section>
+<section class="panel"><form id="profile-form" class="form-grid"><div class="field"><label for="profile-name">Seu nome</label><input id="profile-name" maxlength="80" placeholder="Como podemos chamar você?"></div><div class="field"><label for="profile-city">Cidade ou comunidade (opcional)</label><input id="profile-city" maxlength="100" placeholder="Sua cidade"></div><div class="field full"><button class="primary" type="submit">Salvar perfil</button><span id="profile-message" class="muted" aria-live="polite"></span></div></form><div class="notice" style="margin-top:18px;margin-bottom:0">Seu nome e cidade são sincronizados com o Firebase quando você entra na conta. Relatos antigos locais não são enviados automaticamente.</div></section>
 <section class="panel accessibility-panel" style="margin-top:16px"><h3>♿ Acessibilidade</h3><p class="muted">Personalize a leitura neste dispositivo.</p><div class="accessibility-controls"><button class="secondary" id="font-increase" type="button">Aumentar texto A+</button><button class="secondary" id="font-reset" type="button">Texto padrão</button><button class="secondary" id="contrast-toggle" type="button" aria-pressed="false">Alto contraste</button></div><p id="accessibility-message" class="muted" aria-live="polite">Preferências salvas neste navegador.</p></section>
 </section>
 <footer class="footer">EcoCidade Inteligente · Tecnologia que cuida do planeta 🌱<br>Protótipo comunitário — os dados são locais e as imagens são ilustrativas.</footer>
@@ -213,23 +213,76 @@ body{background:#f3f9fc;color:var(--ink)}
 </div>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 
-/* Autenticação Supabase: chave publicável no navegador; nunca incluir chave secreta. */
-const SUPABASE_URL='https://facqcduxiodhisdzxuos.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY='sb_publishable_m_DgmjCDD7j1BkZjOYU-Gw_PvoHy__9';
-let supabaseClient=null, authUser=null;
+/* Firebase: configuração web do projeto EcoCidade Inteligente. */
+const firebaseConfig = {
+  apiKey: "AIzaSyDj1fO_h4KsbL9wz2qtH7PRdDClzGc8hKw",
+  authDomain: "ecocidade-inteligente.firebaseapp.com",
+  projectId: "ecocidade-inteligente",
+  storageBucket: "ecocidade-inteligente.firebasestorage.app",
+  messagingSenderId: "882034469996",
+  appId: "1:882034469996:web:112364d77c247fa329bc49",
+  measurementId: "G-KXQZCP657Y"
+};
+let firebaseApp=null, firebaseAuth=null, firestoreDb=null, authUser=null, isAdmin=false;
 const authForm=document.getElementById('auth-form'),authMessage=document.getElementById('auth-message');
 const authSubmit=document.getElementById('auth-submit'),authSignup=document.getElementById('auth-signup'),authSignout=document.getElementById('auth-signout');
 function authStatus(message,isError=false){if(authMessage){authMessage.textContent=message;authMessage.style.color=isError?'#b42318':''}}
-function updateAuthUI(user){authUser=user||null;authSubmit.textContent=authUser?'Conta conectada':'Entrar';authSubmit.disabled=!!authUser;authSignup.hidden=!!authUser;authSignout.hidden=!authUser;document.getElementById('auth-email').disabled=!!authUser;document.getElementById('auth-password').disabled=!!authUser;const isAdmin=authUser?.app_metadata?.role==='admin';const adminNav=document.getElementById('admin-nav');if(adminNav)adminNav.hidden=!isAdmin;if(!isAdmin&&document.getElementById('view-admin')?.classList.contains('active'))go('inicio');if(authUser)authStatus('Conta conectada: '+authUser.email+(isAdmin?' · acesso administrativo.':'.'));}
-async function syncRemoteProfile(user){const name=(document.getElementById('profile-name')?.value||profile.name||'').trim(),city=(document.getElementById('profile-city')?.value||profile.city||'').trim();const {error}=await supabaseClient.from('profiles').upsert({id:user.id,display_name:name,city},{onConflict:'id'});if(error)console.warn('Perfil remoto ainda não sincronizado:',error.message)}
-async function initSupabaseAuth(){if(!window.supabase?.createClient){authStatus('Não foi possível carregar a autenticação. Verifique sua conexão.',true);return}try{supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);const {data,error}=await supabaseClient.auth.getSession();if(error)throw error;updateAuthUI(data.session?.user||null);if(data.session?.user)await syncRemoteProfile(data.session.user);supabaseClient.auth.onAuthStateChange((event,session)=>{updateAuthUI(session?.user||null);if(event==='SIGNED_IN')authStatus('Login realizado. Sua conta está conectada.');if(event==='SIGNED_OUT')authStatus('Você saiu da sua conta.')})}catch(err){console.error(err);authStatus('Não foi possível conectar. Confira a configuração do Supabase e tente novamente.',true)}}
-authForm?.addEventListener('submit',async e=>{e.preventDefault();if(!supabaseClient){authStatus('Serviço indisponível. Atualize a página e tente novamente.',true);return}const email=document.getElementById('auth-email').value.trim(),password=document.getElementById('auth-password').value;authSubmit.disabled=true;authSignup.disabled=true;authStatus('Entrando…');try{const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)throw error;updateAuthUI(data.user);await syncRemoteProfile(data.user);authStatus('Login realizado com sucesso.')}catch(err){authStatus(err.message||'Não foi possível entrar. Confira o e-mail e a senha.',true)}finally{if(!authUser){authSubmit.disabled=false;authSignup.disabled=false}}});
-authSignup?.addEventListener('click',async()=>{if(!supabaseClient){authStatus('Serviço indisponível. Atualize a página e tente novamente.',true);return}const email=document.getElementById('auth-email').value.trim(),password=document.getElementById('auth-password').value;if(!email||!password){authStatus('Informe o e-mail e uma senha de pelo menos 8 caracteres.',true);return}if(password.length<8){authStatus('A senha precisa ter pelo menos 8 caracteres.',true);return}authSignup.disabled=true;authSubmit.disabled=true;authStatus('Criando sua conta…');try{const {data,error}=await supabaseClient.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;if(data.session&&data.user){updateAuthUI(data.user);await syncRemoteProfile(data.user);authStatus('Conta criada e conectada com sucesso.')}else authStatus('Cadastro iniciado! Confira seu e-mail e confirme a conta antes de entrar.')}catch(err){authStatus(err.message||'Não foi possível criar a conta. Confira os dados.',true)}finally{authSignup.disabled=false;authSubmit.disabled=!!authUser}});
-authSignout?.addEventListener('click',async()=>{if(!supabaseClient)return;authSignout.disabled=true;const {error}=await supabaseClient.auth.signOut();authSignout.disabled=false;if(error)authStatus(error.message||'Não foi possível sair da conta.',true)});
-initSupabaseAuth();
+function updateAuthUI(user,admin=false){
+ authUser=user||null;isAdmin=!!admin;
+ authSubmit.textContent=authUser?'Conta conectada':'Entrar';authSubmit.disabled=!!authUser;authSignup.hidden=!!authUser;authSignout.hidden=!authUser;
+ document.getElementById('auth-email').disabled=!!authUser;document.getElementById('auth-password').disabled=!!authUser;
+ const adminNav=document.getElementById('admin-nav');if(adminNav)adminNav.hidden=!isAdmin;
+ if(!isAdmin&&document.getElementById('view-admin')?.classList.contains('active'))go('inicio');
+ if(authUser)authStatus('Conta conectada: '+authUser.email+(isAdmin?' · acesso administrativo.':'.'));
+}
+async function syncRemoteProfile(user){
+ if(!firestoreDb||!user)return;
+ const name=(document.getElementById('profile-name')?.value||profile.name||'').trim(),city=(document.getElementById('profile-city')?.value||profile.city||'').trim();
+ await firestoreDb.collection('perfis').doc(user.uid).set({nome:name,cidade:city,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+}
+async function refreshAdminClaim(user){if(!user)return false;try{return (await user.getIdTokenResult(true)).claims.admin===true}catch(e){console.warn('Não foi possível verificar a permissão administrativa.',e);return false}}
+async function initFirebase(){
+ if(!window.firebase){authStatus('Não foi possível carregar o Firebase. Verifique sua conexão.',true);return}
+ try{
+  firebaseApp=window.firebase.apps.length?window.firebase.app():window.firebase.initializeApp(firebaseConfig);
+  firebaseAuth=window.firebase.auth();firestoreDb=window.firebase.firestore();
+  firebaseAuth.onAuthStateChanged(async user=>{
+   const admin=await refreshAdminClaim(user);updateAuthUI(user,admin);
+   if(user){try{await syncRemoteProfile(user)}catch(e){console.warn('Perfil ainda não sincronizado:',e)}}
+   await loadCloudReports();
+  });
+  authStatus('Firebase conectado. Entre ou crie uma conta para sincronizar ocorrências.');
+ }catch(err){console.error(err);authStatus('Não foi possível conectar ao Firebase. Confira a configuração do projeto.',true)}
+}
+authForm?.addEventListener('submit',async e=>{
+ e.preventDefault();if(!firebaseAuth){authStatus('O Firebase ainda não está disponível. Atualize a página.',true);return}
+ const email=document.getElementById('auth-email').value.trim(),password=document.getElementById('auth-password').value;
+ authSubmit.disabled=true;authSignup.disabled=true;authStatus('Entrando…');
+ try{await firebaseAuth.signInWithEmailAndPassword(email,password);authStatus('Login realizado com sucesso.')}
+ catch(err){authStatus(authErrorMessage(err),true)}
+ finally{authSubmit.disabled=!!authUser;authSignup.disabled=!!authUser}
+});
+authSignup?.addEventListener('click',async()=>{
+ if(!firebaseAuth){authStatus('O Firebase ainda não está disponível. Atualize a página.',true);return}
+ const email=document.getElementById('auth-email').value.trim(),password=document.getElementById('auth-password').value;
+ if(!email||!password){authStatus('Informe o e-mail e uma senha de pelo menos 8 caracteres.',true);return}
+ if(password.length<8){authStatus('A senha precisa ter pelo menos 8 caracteres.',true);return}
+ authSignup.disabled=true;authSubmit.disabled=true;authStatus('Criando sua conta…');
+ try{await firebaseAuth.createUserWithEmailAndPassword(email,password);authStatus('Conta criada e conectada.')}
+ catch(err){authStatus(authErrorMessage(err),true)}
+ finally{authSignup.disabled=!!authUser;authSubmit.disabled=!!authUser}
+});
+function authErrorMessage(err){
+ const messages={'auth/invalid-email':'O e-mail informado não é válido.','auth/user-not-found':'Não encontramos uma conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/invalid-credential':'E-mail ou senha incorretos.','auth/email-already-in-use':'Este e-mail já está cadastrado.','auth/weak-password':'Use uma senha mais forte, com pelo menos 8 caracteres.','auth/operation-not-allowed':'Ative E-mail/senha em Firebase Authentication → Método de login.','auth/network-request-failed':'Falha de conexão. Verifique sua internet.'};
+ return messages[err?.code]||err?.message||'Não foi possível concluir a autenticação.';
+}
+authSignout?.addEventListener('click',async()=>{if(!firebaseAuth)return;authSignout.disabled=true;try{await firebaseAuth.signOut();authStatus('Você saiu da sua conta.')}catch(e){authStatus(authErrorMessage(e),true)}finally{authSignout.disabled=false}});
+initFirebase();
 
 const ecoAccess=load('ecocidade-accessibility-v2',{largeText:false,highContrast:false});
 function applyEcoAccess(){document.body.classList.toggle('eco-large-text',!!ecoAccess.largeText);document.body.classList.toggle('eco-high-contrast',!!ecoAccess.highContrast);document.getElementById('contrast-toggle')?.setAttribute('aria-pressed',String(!!ecoAccess.highContrast))}
@@ -255,44 +308,64 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-go],[data-
 function render(){document.getElementById('stat-total').textContent=reports.length;document.getElementById('stat-resolved').textContent=reports.filter(r=>r.status==='Resolvida').length;document.getElementById('stat-progress').textContent=reports.filter(r=>r.status==='Em andamento').length;document.getElementById('stat-pending').textContent=reports.filter(r=>r.status==='Pendente').length;renderRecent();renderReports();renderInterests();renderMap();renderImpactChart()}
 function renderImpactChart(){const el=document.getElementById('impact-chart');if(!el)return;const counts={};reports.forEach(r=>{const k=r.category||'Outros';counts[k]=(counts[k]||0)+1});const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);if(!entries.length){el.innerHTML='<p class="muted">Registre ocorrências para visualizar os indicadores por categoria.</p>';return}const max=Math.max(1,...entries.map(x=>x[1]));el.innerHTML=entries.map(([name,n])=>'<div class="impact-row"><span>'+escapeHtml(name)+'</span><div class="impact-track" role="img" aria-label="'+escapeHtml(name)+': '+n+' ocorrência(s)"><div class="impact-bar" style="width:'+(n/max*100)+'%"></div></div><strong>'+n+'</strong></div>').join('')}
 
-// Painel administrativo: acesso visual apenas para usuários com app_metadata.role=admin.
-// As políticas RLS do Supabase também precisam proteger as operações no banco.
+// O painel só opera quando o token Firebase contém a custom claim admin=true.
 async function renderAdmin(){
  const notice=document.getElementById('admin-notice'),list=document.getElementById('admin-report-list'),users=document.getElementById('admin-user-list');
- if(!authUser||authUser.app_metadata?.role!=='admin'){notice.textContent='Acesso restrito. Entre com uma conta autorizada como administradora.';list.innerHTML='<div class="empty">Sem permissão para visualizar os dados administrativos.</div>';users.textContent='Sem permissão.';return}
- if(!supabaseClient){notice.textContent='Não foi possível conectar ao banco de dados.';return}
- notice.textContent='Carregando dados compartilhados…';
+ if(!authUser||!isAdmin){notice.textContent='Acesso restrito. Entre com a conta administrativa autorizada.';list.innerHTML='<div class="empty">Sem permissão para visualizar os dados administrativos.</div>';users.textContent='Sem permissão.';return}
+ if(!firestoreDb){notice.textContent='Não foi possível conectar ao Firestore.';return}
+ notice.textContent='Carregando dados do Firebase…';
  try{
-  const [rr,pr]=await Promise.all([supabaseClient.from('reports').select('id,user_id,category,place,description,latitude,longitude,status,created_at').order('created_at',{ascending:false}).limit(500),supabaseClient.from('profiles').select('id,display_name,city,created_at').order('created_at',{ascending:false}).limit(500)]);
-  if(rr.error)throw rr.error;
-  if(pr.error)throw pr.error;
-  const reportsRemote=rr.data||[],profilesRemote=pr.data||[];
-  document.getElementById('admin-total').textContent=reportsRemote.length;
-  document.getElementById('admin-pending').textContent=reportsRemote.filter(r=>r.status==='Pendente').length;
-  document.getElementById('admin-progress').textContent=reportsRemote.filter(r=>r.status==='Em andamento'||r.status==='Em análise').length;
-  document.getElementById('admin-resolved').textContent=reportsRemote.filter(r=>r.status==='Resolvida').length;
-  const filter=document.getElementById('admin-filter').value;
-  const shown=filter?reportsRemote.filter(r=>r.status===filter):reportsRemote;
-  list.innerHTML=shown.length?shown.map(r=>'<article class="report"><div style="min-width:0;flex:1"><b>'+escapeHtml(r.category)+'</b><div class="muted">'+escapeHtml(r.place||'Local não informado')+' · '+new Date(r.created_at).toLocaleString('pt-BR')+'</div><p style="margin:7px 0;font-size:12px;white-space:pre-wrap">'+escapeHtml(r.description)+'</p><div class="muted">ID do relato: '+escapeHtml(r.id)+'</div></div><div style="display:grid;gap:7px;min-width:145px"><select data-admin-status="'+escapeHtml(r.id)+'" aria-label="Status da ocorrência" style="padding:8px;border:1px solid var(--line);border-radius:8px">'+['Pendente','Em análise','Em andamento','Resolvida'].map(st=>'<option '+(r.status===st?'selected':'')+'>'+st+'</option>').join('')+'</select><button class="secondary" type="button" data-admin-delete="'+escapeHtml(r.id)+'">Excluir ocorrência</button></div></article>').join(''):'<div class="empty">Nenhuma ocorrência compartilhada encontrada com este filtro.</div>';
-  users.innerHTML=profilesRemote.length?'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:10px;border-bottom:1px solid var(--line)">Nome</th><th style="text-align:left;padding:10px;border-bottom:1px solid var(--line)">Cidade</th><th style="text-align:left;padding:10px;border-bottom:1px solid var(--line)">Cadastro</th></tr></thead><tbody>'+profilesRemote.map(p=>'<tr><td style="padding:10px;border-bottom:1px solid var(--line)">'+escapeHtml(p.display_name||'Nome não informado')+'</td><td style="padding:10px;border-bottom:1px solid var(--line)">'+escapeHtml(p.city||'—')+'</td><td style="padding:10px;border-bottom:1px solid var(--line)">'+new Date(p.created_at).toLocaleDateString('pt-BR')+'</td></tr>').join('')+'</tbody></table></div>':'Nenhum perfil encontrado.';
-  notice.textContent='Dados atualizados. '+reportsRemote.length+' ocorrência(s) e '+profilesRemote.length+' perfil(is) encontrados.';
- }catch(err){console.error('Falha no painel administrativo:',err);notice.textContent='Não foi possível carregar os dados. Verifique se o SQL de permissões administrativas foi executado no Supabase.';list.innerHTML='<div class="empty">Erro ao carregar ocorrências: '+escapeHtml(err.message||'erro desconhecido')+'</div>';users.textContent='Erro ao carregar perfis.'}
+  const snap=await firestoreDb.collection('ocorrencias').limit(500).get();
+  const remote=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>dateMillis(b.criadoEm)-dateMillis(a.criadoEm));
+  document.getElementById('admin-total').textContent=remote.length;
+  document.getElementById('admin-pending').textContent=remote.filter(r=>r.status==='Pendente').length;
+  document.getElementById('admin-progress').textContent=remote.filter(r=>r.status==='Em andamento'||r.status==='Em análise').length;
+  document.getElementById('admin-resolved').textContent=remote.filter(r=>r.status==='Resolvida').length;
+  const filter=document.getElementById('admin-filter').value,shown=filter?remote.filter(r=>r.status===filter):remote;
+  list.innerHTML=shown.length?shown.map(r=>'<article class="report"><div style="min-width:0;flex:1"><b>'+escapeHtml(r.categoria||r.category||r.titulo||'Outro problema ambiental')+'</b><div class="muted">'+escapeHtml(r.local||r.place||'Local não informado')+' · '+new Date(dateMillis(r.criadoEm||r.createdEm)).toLocaleString('pt-BR')+'</div><p style="margin:7px 0;font-size:12px;white-space:pre-wrap">'+escapeHtml(r.descricao||r.description||r.titulo||'')+'</p><div class="muted">ID do relato: '+escapeHtml(r.id)+'</div></div><div style="display:grid;gap:7px;min-width:145px"><select data-admin-status="'+escapeHtml(r.id)+'" aria-label="Status da ocorrência" style="padding:8px;border:1px solid var(--line);border-radius:8px">'+['Pendente','Em análise','Em andamento','Resolvida'].map(st=>'<option '+((r.status||'Pendente')===st?'selected':'')+'>'+st+'</option>').join('')+'</select><button class="secondary" type="button" data-admin-delete="'+escapeHtml(r.id)+'">Excluir ocorrência</button></div></article>').join(''):'<div class="empty">Nenhuma ocorrência encontrada com este filtro.</div>';
+  users.textContent='A lista de contas foi ocultada para evitar expor dados pessoais. Gerencie usuários no Firebase Authentication.';
+  notice.textContent='Dados atualizados: '+remote.length+' ocorrência(s) no Firestore.';
+ }catch(err){console.error(err);notice.textContent='Não foi possível carregar dados. Verifique as regras do Firestore.';list.innerHTML='<div class="empty">Erro: '+escapeHtml(err.message||'erro desconhecido')+'</div>';users.textContent='Não foi possível carregar os dados.'}
 }
+function dateMillis(v){if(v?.toDate)return v.toDate().getTime();const n=new Date(v||0).getTime();return Number.isFinite(n)?n:0}
 document.getElementById('admin-refresh')?.addEventListener('click',renderAdmin);
 document.getElementById('admin-filter')?.addEventListener('change',renderAdmin);
-document.getElementById('admin-report-list')?.addEventListener('change',async e=>{const id=e.target.dataset.adminStatus;if(!id||!authUser||authUser.app_metadata?.role!=='admin')return;const {error}=await supabaseClient.from('reports').update({status:e.target.value}).eq('id',id);if(error){alert('Não foi possível atualizar: '+error.message);renderAdmin();return}renderAdmin()});
-document.getElementById('admin-report-list')?.addEventListener('click',async e=>{const id=e.target.dataset.adminDelete;if(!id||!authUser||authUser.app_metadata?.role!=='admin')return;if(!confirm('Excluir permanentemente esta ocorrência compartilhada? Esta ação não pode ser desfeita.'))return;const {error}=await supabaseClient.from('reports').delete().eq('id',id);if(error){alert('Não foi possível excluir: '+error.message);return}renderAdmin()});
+document.getElementById('admin-report-list')?.addEventListener('change',async e=>{const id=e.target.dataset.adminStatus;if(!id||!authUser||!isAdmin||!firestoreDb)return;try{await firestoreDb.collection('ocorrencias').doc(id).update({status:e.target.value,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()});await renderAdmin();await loadCloudReports()}catch(err){alert('Não foi possível atualizar. Verifique as regras do Firestore.');renderAdmin()}});
+document.getElementById('admin-report-list')?.addEventListener('click',async e=>{const id=e.target.dataset.adminDelete;if(!id||!authUser||!isAdmin||!firestoreDb)return;if(!confirm('Excluir permanentemente esta ocorrência? Esta ação não pode ser desfeita.'))return;try{await firestoreDb.collection('ocorrencias').doc(id).delete();await renderAdmin();await loadCloudReports()}catch(err){alert('Não foi possível excluir. Verifique as regras do Firestore.')}});
 function typeIcon(t){if(/queimada/i.test(t))return '🔥';if(/água|rio|córrego|esgoto/i.test(t))return '💧';if(/árvore|verde/i.test(t))return '🌱';if(/lixo|descarte|resíduo/i.test(t))return '♻️';return '⚠️'}
 function renderRecent(){const el=document.getElementById('recent-list');const list=[...reports].reverse().slice(0,4);el.innerHTML=list.length?list.map(r=>'<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category)+'</b><small>'+escapeHtml(r.place||'Local não informado')+' · '+new Date(r.created).toLocaleDateString('pt-BR')+'</small></div><span class="tag '+(r.status==='Resolvida'?'':r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status)+'</span></div>').join(''):'<div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div>'}
 function renderReports(){const el=document.getElementById('report-list');if(!reports.length){el.innerHTML='<div class="panel empty">🌿<br><b>Nenhuma ocorrência registrada ainda.</b><br>Quando você salvar um relato, ele aparecerá aqui.</div>';return}el.innerHTML=[...reports].reverse().map(r=>'<article class="report"><div style="display:flex;gap:12px;min-width:0"><div class="stat-icon">'+typeIcon(r.category)+'</div><div><b>'+escapeHtml(r.category)+'</b><div class="muted">'+escapeHtml(r.place||'Local não informado')+' · '+new Date(r.created).toLocaleString('pt-BR')+'</div><p style="margin:7px 0;font-size:12px;white-space:pre-wrap">'+escapeHtml(r.description)+'</p>'+(r.photo?'<img src="'+r.photo+'" alt="Foto do relato" style="max-width:180px;max-height:130px;border-radius:10px">':'')+(r.lat&&r.lng?'<div class="muted">📍 '+Number(r.lat).toFixed(5)+', '+Number(r.lng).toFixed(5)+'</div>':'')+'</div></div><div style="display:grid;gap:7px;min-width:125px"><select aria-label="Status do relato" data-status="'+r.id+'" style="padding:7px;border-radius:8px;border:1px solid var(--line)">'+['Pendente','Em andamento','Resolvida'].map(s=>'<option '+(r.status===s?'selected':'')+'>'+s+'</option>').join('')+'</select><button class="secondary" data-delete="'+r.id+'">Excluir</button></div></article>').join('')}
-document.getElementById('report-form').addEventListener('submit',e=>{e.preventDefault();const category=document.getElementById('category').value,description=document.getElementById('description').value.trim();if(!category||!description)return;const file=document.getElementById('photo').files[0];const add=async photo=>{const place=document.getElementById('place').value.trim(),lat=document.getElementById('latitude').value||null,lng=document.getElementById('longitude').value||null;reports.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),category,place,description,lat,lng,photo:photo||'',status:'Pendente',created:new Date().toISOString()});try{save();let remoteSaved=false,remoteFailed=false;if(supabaseClient&&authUser){const {error}=await supabaseClient.from('reports').insert({user_id:authUser.id,category,place,description,latitude:lat?Number(lat):null,longitude:lng?Number(lng):null,status:'Pendente'});if(error){console.warn('Relato salvo localmente, mas não foi compartilhado:',error.message);remoteFailed=true}else remoteSaved=true}document.getElementById('form-message').textContent=remoteSaved?'Relato salvo neste navegador e enviado para a comunidade.':remoteFailed?'Relato salvo localmente, mas o envio para a comunidade falhou. Verifique as permissões do Supabase.':'Relato salvo neste navegador. Entre na sua conta para compartilhar com a comunidade.';e.target.reset();clearLoc();document.getElementById('photo-preview').style.display='none';render();setTimeout(()=>go('ocorrencias'),500)}catch(err){document.getElementById('form-message').textContent='Não foi possível salvar. Tente uma foto menor ou retire a foto.'}};if(file){if(file.size>900000){document.getElementById('form-message').textContent='A foto deve ter menos de 900 KB.';return}const reader=new FileReader();reader.onload=()=>add(reader.result);reader.readAsDataURL(file)}else add('')});
+async function loadCloudReports(){
+ if(!firestoreDb)return;
+ try{
+  const snap=await firestoreDb.collection('ocorrencias').limit(300).get();
+  const cloud=snap.docs.map(d=>{const x=d.data();return {id:d.id,category:x.categoria||x.category||x.titulo||'Outro problema ambiental',place:x.local||x.place||'',description:x.descricao||x.description||'',lat:x.latitude??x.lat??null,lng:x.longitude??x.lng??null,photo:'',status:x.status||'Pendente',created:x.criadoEm?.toDate?.().toISOString?.()||x.createdEm?.toDate?.().toISOString?.()||x.created||new Date().toISOString(),cloud:true,ownerUid:x.ownerUid||null}});
+  cloud.sort((a,b)=>new Date(b.created)-new Date(a.created));
+  const local=load(STORE,[]).filter(r=>!r.cloud);
+  reports=[...cloud,...local];render();
+ }catch(err){console.warn('Firestore indisponível ou regras ainda não publicadas:',err);render()}
+}
+document.getElementById('report-form').addEventListener('submit',async e=>{
+ e.preventDefault();const category=document.getElementById('category').value,description=document.getElementById('description').value.trim();if(!category||!description)return;
+ if(!authUser){document.getElementById('form-message').textContent='Entre ou crie uma conta na seção Meu perfil antes de enviar uma ocorrência.';go('perfil');return}
+ if(!firestoreDb){document.getElementById('form-message').textContent='O Firebase ainda não está conectado. Atualize a página.';return}
+ const file=document.getElementById('photo').files[0];
+ if(file){document.getElementById('form-message').textContent='O envio de fotos será habilitado após configurar o Firebase Storage. Remova a foto e envie o relato sem imagem por enquanto.';return}
+ const place=document.getElementById('place').value.trim(),lat=document.getElementById('latitude').value,lng=document.getElementById('longitude').value,button=e.target.querySelector('button[type="submit"]');button.disabled=true;
+ try{
+  await firestoreDb.collection('ocorrencias').add({categoria:category,local:place,descricao:description,latitude:lat?Number(lat):null,longitude:lng?Number(lng):null,status:'Pendente',ownerUid:authUser.uid,criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('form-message').textContent='Ocorrência enviada ao Firebase e compartilhada com a comunidade.';
+  e.target.reset();clearLoc();document.getElementById('photo-preview').style.display='none';await loadCloudReports();setTimeout(()=>go('ocorrencias'),350);
+ }catch(err){console.error(err);document.getElementById('form-message').textContent='Não foi possível enviar. Confirme se E-mail/senha está ativado e se as regras do Firestore foram publicadas.'}
+ finally{button.disabled=false}
+});
 document.getElementById('photo').addEventListener('change',e=>{const f=e.target.files[0],img=document.getElementById('photo-preview');if(f){img.src=URL.createObjectURL(f);img.style.display='block'}else img.style.display='none'});
 document.getElementById('report-form').addEventListener('reset',()=>{setTimeout(()=>{clearLoc();document.getElementById('photo-preview').style.display='none'},0)});
 document.getElementById('get-location').addEventListener('click',()=>{const msg=document.getElementById('form-message');if(!navigator.geolocation){msg.textContent='Seu navegador não oferece localização.';return}msg.textContent='Solicitando permissão de localização...';navigator.geolocation.getCurrentPosition(p=>{document.getElementById('latitude').value=p.coords.latitude;document.getElementById('longitude').value=p.coords.longitude;document.getElementById('coordinates').value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);msg.textContent='Localização adicionada ao relato.'},()=>msg.textContent='Não foi possível obter a localização. Verifique a permissão do navegador.',{enableHighAccuracy:true,timeout:10000})});
 function clearLoc(){document.getElementById('latitude').value='';document.getElementById('longitude').value='';document.getElementById('coordinates').value=''}
 document.getElementById('clear-location').addEventListener('click',clearLoc);
-document.getElementById('report-list').addEventListener('change',e=>{if(e.target.dataset.status){const r=reports.find(x=>x.id===e.target.dataset.status);if(r){r.status=e.target.value;save();render()}}});
-document.getElementById('report-list').addEventListener('click',e=>{const id=e.target.dataset.delete;if(id&&confirm('Excluir este relato deste navegador?')){reports=reports.filter(r=>r.id!==id);save();render()}});
+document.getElementById('report-list').addEventListener('change',async e=>{if(!e.target.dataset.status)return;const r=reports.find(x=>x.id===e.target.dataset.status);if(!r)return;if(r.cloud){if(!isAdmin){alert('Somente administradores podem alterar o status.');renderReports();return}try{await firestoreDb.collection('ocorrencias').doc(r.id).update({status:e.target.value,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()});await loadCloudReports()}catch(err){alert('Não foi possível atualizar o status.');renderReports()}}else{alert('Este relato antigo permanece salvo apenas neste navegador.');renderReports()}});
+document.getElementById('report-list').addEventListener('click',async e=>{const id=e.target.dataset.delete;if(!id||!confirm('Excluir este relato?'))return;const r=reports.find(x=>x.id===id);if(!r)return;if(r.cloud){if(!isAdmin){alert('Somente administradores podem excluir ocorrências compartilhadas.');return}try{await firestoreDb.collection('ocorrencias').doc(id).delete();await loadCloudReports()}catch(err){alert('Não foi possível excluir a ocorrência.')}}else{reports=reports.filter(x=>x.id!==id);save();render()}});
 document.getElementById('clear-reports').addEventListener('click',()=>{if(reports.length&&confirm('Apagar todos os relatos salvos neste navegador?')){reports=[];save();render()}});
 document.getElementById('export-reports').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(reports,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ecocidade-ocorrencias.json';a.click();URL.revokeObjectURL(url)});
 function initMap(id){if(maps[id]||!document.getElementById(id)||!window.L)return;const map=L.map(id,{scrollWheelZoom:false}).setView([-5.1,-42.8],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);maps[id]=map}
@@ -304,7 +377,7 @@ document.getElementById('locate-me').addEventListener('click',locateUser);
 document.querySelectorAll('.action-interest').forEach(b=>b.addEventListener('click',()=>{const name=b.dataset.action;if(!interests.includes(name))interests.push(name);localStorage.setItem(INTEREST,JSON.stringify(interests));renderInterests();b.textContent='✓ Interesse registrado';setTimeout(()=>b.textContent='Tenho interesse',1400)}));
 function renderInterests(){const el=document.getElementById('interest-list');if(el)el.innerHTML=interests.length?interests.map(x=>'• '+escapeHtml(x)).join('<br>'):'Você ainda não marcou interesse em uma ação.'}
 function fillProfile(){document.getElementById('profile-name').value=profile.name||'';document.getElementById('profile-city').value=profile.city||''}
-document.getElementById('profile-form').addEventListener('submit',async e=>{e.preventDefault();profile={name:document.getElementById('profile-name').value.trim(),city:document.getElementById('profile-city').value.trim()};localStorage.setItem(PROFILE,JSON.stringify(profile));document.querySelector('.avatar').textContent=(profile.name||'E').charAt(0).toUpperCase();document.getElementById('profile-message').textContent='Perfil salvo neste navegador.';if(supabaseClient&&authUser){const {error}=await supabaseClient.from('profiles').upsert({id:authUser.id,display_name:profile.name,city:profile.city},{onConflict:'id'});document.getElementById('profile-message').textContent=error?'Perfil local salvo, mas a sincronização falhou: '+error.message:'Perfil salvo neste navegador e sincronizado com sua conta.'}});
+document.getElementById('profile-form').addEventListener('submit',async e=>{e.preventDefault();profile={name:document.getElementById('profile-name').value.trim(),city:document.getElementById('profile-city').value.trim()};localStorage.setItem(PROFILE,JSON.stringify(profile));document.querySelector('.avatar').textContent=(profile.name||'E').charAt(0).toUpperCase();const msg=document.getElementById('profile-message');if(authUser&&firestoreDb){try{await syncRemoteProfile(authUser);msg.textContent='Perfil salvo neste navegador e sincronizado com o Firebase.'}catch(err){msg.textContent='Perfil local salvo, mas a sincronização falhou. Verifique as regras do Firestore.'}}else msg.textContent='Perfil salvo neste navegador. Entre na conta para sincronizar.'});
 document.getElementById('search-all').addEventListener('keydown',e=>{if(e.key==='Enter'){const q=e.target.value.toLowerCase();const found=reports.some(r=>(r.category+' '+r.place+' '+r.description).toLowerCase().includes(q));if(!q){go('inicio')}else if(found){go('ocorrencias')}else{go('guia');alert('Nenhum relato corresponde à busca. Você pode explorar o guia sustentável.')}}});
 
 /* Instalação opcional como aplicativo (PWA) e cache básico da página */
@@ -315,6 +388,6 @@ if(installButton)installButton.addEventListener('click',async()=>{if(!installPro
 window.addEventListener('appinstalled',()=>{if(installButton)installButton.hidden=true});
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Modo offline indisponível',err)));
 
-try{initMap('mini-map');render();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
+try{initMap('mini-map');render();loadCloudReports();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
 </script>
 </body></html>
