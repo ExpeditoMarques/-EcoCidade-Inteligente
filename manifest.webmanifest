@@ -1,0 +1,19 @@
+{
+  "name": "EcoCidade Inteligente",
+  "short_name": "EcoCidade",
+  "description": "Tecnologia que cuida do planeta",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f9f6",
+  "theme_color": "#075b45",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
