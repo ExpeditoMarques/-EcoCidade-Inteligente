@@ -46,6 +46,34 @@ body{background:#f3f9fc;color:var(--ink)}
 @media(max-width:1050px){.app{grid-template-columns:195px minmax(0,1fr)}.content{padding:10px}.hero{min-height:220px}.columns{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.app{display:block}.sidebar{background:#fff;color:var(--ink);padding:7px 5px calc(7px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}.nav button{color:#607c86}.nav button.active,.nav button:hover{color:#087f5b;background:#e2f8e9}.nav .ico{font-size:17px}.topbar{height:55px;padding:0 13px}.avatar{width:32px;height:32px}.content{padding:9px 10px 92px}.hero{min-height:270px;border-radius:13px;padding:21px;background-position:57% center}.hero h1{font-size:29px;max-width:290px}.hero p{font-size:12px;max-width:290px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.stat{padding:11px}.stat-num{font-size:24px}.stat-icon{width:35px;height:35px}.columns{grid-template-columns:1fr;gap:10px}.panel{padding:12px}.mapmock{height:280px}.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.guide-grid,.actions-grid{grid-template-columns:1fr}.section-title{margin:17px 0 10px}}
 
+
+/* Ajuste fino para corresponder à referência enviada */
+.app{grid-template-columns:232px minmax(0,1fr);background:#f5fafc}
+.sidebar{background:linear-gradient(180deg,#003f3e 0%,#002f31 100%);color:#fff;border:0;padding:22px 13px}
+.brand strong{color:#fff;font-size:17px}.brand small{color:#b6d5d3}
+.nav button{color:#e8f5f3}.nav button.active,.nav button:hover{background:#27ad4e;color:#fff}
+.side-note{background:linear-gradient(145deg,#07574e,#003a39);color:#fff}
+.topbar{height:54px}
+.content{padding:8px 13px 32px}
+.hero{min-height:237px;border-radius:13px;padding:27px 30px;background:linear-gradient(90deg,#004538 0%,#005441d9 36%,#00544110 100%),url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1800&q=85') center 57%/cover}
+.hero-copy{max-width:420px}.hero h1{font-size:clamp(28px,2.4vw,35px);max-width:340px}.hero p{font-size:12px;max-width:330px;line-height:1.5}
+.stats{margin:10px 0;gap:10px}.stat{padding:12px 14px;border-radius:13px}.stat-top{font-size:10px}.stat-num{font-size:25px;margin-top:3px}.stat-icon{width:42px;height:42px;border-radius:50%}
+.columns{grid-template-columns:minmax(0,1.15fr) minmax(245px,.95fr) minmax(220px,.72fr);gap:10px;margin-top:11px;align-items:stretch}
+.columns>.panel{padding:12px;border-radius:13px;min-width:0}
+.columns .panel-head{align-items:center}.columns .panel-head .secondary{font-size:10px;padding:7px 9px}
+.mapmock{height:248px}.issue{gap:8px;padding:10px 0}.issue-icon{width:34px;height:34px}.issue-info b{font-size:10px}.issue-info small{font-size:9px}.tag{font-size:8px}
+.quick-panel .quick-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.quick-panel .quick{padding:9px 10px;min-width:0;border-radius:10px;box-shadow:none;gap:9px}
+.quick-panel .quick-icon{width:32px;height:32px;border-radius:50%;font-size:17px}
+.quick-panel .quick b{font-size:10px}.quick-panel .quick small{font-size:9px}
+.quick-panel .quick-register{background:#28ad4e;color:#fff;border:0}.quick-panel .quick-register .quick-icon{background:#ffffff30}
+.quick-panel .quick-map{background:#218bdb;color:#fff;border:0}.quick-panel .quick-map .quick-icon{background:#ffffff30}
+.quick-panel .quick-guide{background:#dff6e8;color:#075c3e;border:0}.quick-panel .quick-actions{background:#e9e0ff;color:#5533a6;border:0}
+.quick-quote{text-align:center;color:#087f5b;font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:12px;line-height:1.5;margin:12px 4px 2px}
+#view-inicio>.section-title,#view-inicio>.quick-grid,#view-inicio>.photo-grid{display:none!important}
+@media(max-width:1150px){.columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.quick-panel{grid-column:1/-1}.quick-panel .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.quick-panel .quick{flex-direction:column;text-align:center;align-items:center}.quick-panel .quick small{display:none}}
+@media(max-width:700px){.app{display:block}.sidebar{background:#fff;color:var(--ink);padding:7px 5px calc(7px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}.nav button{color:#607c86}.nav button.active,.nav button:hover{color:#087f5b;background:#e2f8e9}.content{padding:9px 10px 92px}.hero{min-height:260px;padding:21px;background-position:58% center}.hero h1{font-size:29px;max-width:285px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:11px}.columns{grid-template-columns:1fr;gap:10px}.quick-panel{grid-column:auto}.quick-panel .quick-grid{grid-template-columns:1fr}.quick-panel .quick{flex-direction:row;text-align:left;align-items:center}.quick-panel .quick small{display:block}.mapmock{height:280px}}
+
 </style>
 </head>
 <body>
@@ -74,16 +102,15 @@ body{background:#f3f9fc;color:var(--ink)}
     <article class="stat"><div class="stat-top">Em andamento <span class="stat-icon" style="background:#fff1d7">◷</span></div><div class="stat-num" id="stat-progress">0</div><div class="stat-foot">Relatos em acompanhamento</div></article>
     <article class="stat"><div class="stat-top">Pendentes <span class="stat-icon" style="background:#ffebeb">!</span></div><div class="stat-num" id="stat-pending">0</div><div class="stat-foot">Aguardando acompanhamento</div></article>
   </div>
-  <div class="section-title"><div><h2>Acesso rápido</h2><p>O que você gostaria de fazer hoje?</p></div></div>
-  <div class="quick-grid">
-    <button class="quick" data-go="registrar"><span class="quick-icon">📸</span><span><b>Registrar ocorrência</b><small>Relate um problema</small></span></button>
-    <button class="quick" data-go="mapa"><span class="quick-icon">🗺️</span><span><b>Mapa ambiental</b><small>Veja os pontos no mapa</small></span></button>
-    <button class="quick" data-go="guia"><span class="quick-icon">🌱</span><span><b>Guia sustentável</b><small>Dicas para o dia a dia</small></span></button>
-    <button class="quick" data-go="acoes"><span class="quick-icon">🤝</span><span><b>Ações comunitárias</b><small>Participe e colabore</small></span></button>
-  </div>
   <div class="columns">
     <section class="panel"><div class="panel-head"><div><h2>Mapa ambiental</h2><span class="muted">Relatos com localização salva</span></div><button class="secondary" data-go="mapa">Ver mapa ↗</button></div><div class="mapmock"><div id="mini-map"></div></div><div class="legend"><span><i class="legend-dot" style="background:#df9a27"></i>Pendente</span><span><i class="legend-dot" style="background:#1685e8"></i>Em andamento</span><span><i class="legend-dot" style="background:#087f5b"></i>Resolvida</span></div></section>
-    <section class="panel"><div class="panel-head"><div><h2>Relatos recentes</h2><span class="muted">Atualizados neste navegador</span></div><button class="secondary" data-go="ocorrencias">Ver todos</button></div><div class="issue-list" id="recent-list"><div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div></div></section>
+    <section class="panel"><div class="panel-head"><div><h2>Últimas ocorrências</h2><span class="muted">Relatos recentes da comunidade</span></div><button class="secondary" data-go="ocorrencias">Ver todas →</button></div><div class="issue-list" id="recent-list"><div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div></div></section>
+    <section class="panel quick-panel"><div class="panel-head"><div><h2>Ações rápidas</h2><span class="muted">Participe da mudança</span></div></div><div class="quick-grid">
+      <button class="quick quick-register" data-go="registrar"><span class="quick-icon">🌿</span><span><b>Registrar ocorrência</b><small>Relate um problema ambiental</small></span></button>
+      <button class="quick quick-map" data-go="mapa"><span class="quick-icon">📍</span><span><b>Ver mapa</b><small>Explore os relatos localizados</small></span></button>
+      <button class="quick quick-guide" data-go="guia"><span class="quick-icon">📖</span><span><b>Guia sustentável</b><small>Dicas para o dia a dia</small></span></button>
+      <button class="quick quick-actions" data-go="acoes"><span class="quick-icon">👥</span><span><b>Ações comunitárias</b><small>Faça parte da comunidade</small></span></button>
+    </div><p class="quick-quote">“O futuro da nossa cidade começa com você!” 🌱</p></section>
   </div>
   <div class="section-title"><div><h2>Inspire-se para cuidar do planeta</h2><p>Natureza, reciclagem e energia limpa.</p></div></div>
   <div class="photo-grid">
