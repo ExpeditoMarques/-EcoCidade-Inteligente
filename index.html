@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#075b45"><meta name="description" content="EcoCidade Inteligente — tecnologia que cuida do planeta.">
+<meta name="theme-color" content="#075b45"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><meta name="description" content="EcoCidade Inteligente — tecnologia que cuida do planeta.">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <title>EcoCidade Inteligente</title>
 <style>
@@ -75,6 +75,7 @@ body{background:#f3f9fc;color:var(--ink)}
 @media(max-width:700px){.app{display:block}.sidebar{background:#fff;color:var(--ink);padding:7px 5px calc(7px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}.nav button{color:#607c86}.nav button.active,.nav button:hover{color:#087f5b;background:#e2f8e9}.content{padding:9px 10px 92px}.hero{min-height:260px;padding:21px;background-position:58% center}.hero h1{font-size:29px;max-width:285px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:11px}.columns{grid-template-columns:1fr;gap:10px}.quick-panel{grid-column:auto}.quick-panel .quick-grid{grid-template-columns:1fr}.quick-panel .quick{flex-direction:row;text-align:left;align-items:center}.quick-panel .quick small{display:block}.mapmock{height:280px}}
 
 .brand-mark{display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent!important;box-shadow:0 5px 14px #087f5b26!important}.brand-mark svg{display:block;width:100%;height:100%}.brand .brand-intel{color:#1685e8}.brand strong{line-height:1.08}.brand small{display:block;margin-top:5px}@media(max-width:700px){.brand-mark{width:38px;height:38px;flex:0 0 38px}.brand .brand-intel{color:#1685e8}}
+.install-app{border:0;border-radius:22px;padding:9px 13px;background:#087f5b;color:#fff;font-weight:700;font-size:12px;white-space:nowrap}.install-app:hover{background:#066647}.install-app[hidden]{display:none!important}@media(max-width:700px){.top-actions{gap:6px}.install-app{font-size:11px;padding:8px 10px}.status{display:none}}
 </style>
 </head>
 <body>
@@ -93,7 +94,7 @@ body{background:#f3f9fc;color:var(--ink)}
   <div class="side-note"><div style="font-size:25px">🌱</div><b>Pequenas atitudes, grandes mudanças!</b><p>Uma cidade mais limpa começa com a participação de todos.</p></div>
 </aside>
 <div class="main">
-<header class="topbar"><div class="crumb">EcoCidade / <b id="crumb-title">Início</b></div><div class="top-actions"><input class="search" id="search-all" placeholder="⌕  Buscar no sistema..." aria-label="Buscar"><div class="status"><span class="dot"></span> Comunidade sustentável</div><div class="avatar">E</div></div></header>
+<header class="topbar"><div class="crumb">EcoCidade / <b id="crumb-title">Início</b></div><div class="top-actions"><input class="search" id="search-all" placeholder="⌕  Buscar no sistema..." aria-label="Buscar"><button class="install-app" id="install-app" type="button" hidden>＋ Instalar app</button><div class="status"><span class="dot"></span> Comunidade sustentável</div><div class="avatar">E</div></div></header>
 <main class="content">
 <section class="view active" id="view-inicio">
   <div class="hero"><div class="hero-copy"><div class="eyebrow">🌎 Nosso futuro começa agora</div><h1>Juntos por uma cidade mais verde e sustentável!</h1><p>Registre problemas ambientais, acompanhe os relatos da comunidade e participe de ações que fazem a diferença.</p><button class="primary" data-go="registrar">＋ Registrar ocorrência <span>→</span></button></div></div>
@@ -205,6 +206,15 @@ function renderInterests(){const el=document.getElementById('interest-list');if(
 function fillProfile(){document.getElementById('profile-name').value=profile.name||'';document.getElementById('profile-city').value=profile.city||''}
 document.getElementById('profile-form').addEventListener('submit',e=>{e.preventDefault();profile={name:document.getElementById('profile-name').value.trim(),city:document.getElementById('profile-city').value.trim()};localStorage.setItem(PROFILE,JSON.stringify(profile));document.querySelector('.avatar').textContent=(profile.name||'E').charAt(0).toUpperCase();document.getElementById('profile-message').textContent='Perfil salvo neste navegador.'});
 document.getElementById('search-all').addEventListener('keydown',e=>{if(e.key==='Enter'){const q=e.target.value.toLowerCase();const found=reports.some(r=>(r.category+' '+r.place+' '+r.description).toLowerCase().includes(q));if(!q){go('inicio')}else if(found){go('ocorrencias')}else{go('guia');alert('Nenhum relato corresponde à busca. Você pode explorar o guia sustentável.')}}});
+
+/* Instalação opcional como aplicativo (PWA) e cache básico da página */
+let installPromptEvent=null;
+const installButton=document.getElementById('install-app');
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;if(installButton)installButton.hidden=false});
+if(installButton)installButton.addEventListener('click',async()=>{if(!installPromptEvent){alert('Para instalar, abra o menu do navegador e escolha “Instalar página” ou “Adicionar à tela inicial”, se essa opção estiver disponível.');return}installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;installButton.hidden=true});
+window.addEventListener('appinstalled',()=>{if(installButton)installButton.hidden=true});
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Modo offline indisponível',err)));
+
 try{initMap('mini-map');render();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
 </script>
 </body></html>
