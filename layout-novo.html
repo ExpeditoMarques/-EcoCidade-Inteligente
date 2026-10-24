@@ -76,6 +76,55 @@ body{background:linear-gradient(135deg,#f3fbff 0%,#f3fbf5 60%,#eef8ff 100%)}
 }
 @media(min-width:701px) and (max-width:1000px){.content{padding:25px 22px}.sidebar{background:linear-gradient(180deg,#003e3b,#00554a);color:white}.nav button{color:#e1f6ee}}
 
+
+/* Layout desktop aproximado da imagem de referência */
+@media(min-width:1001px){
+ .app{grid-template-columns:232px minmax(0,1fr);padding:7px;gap:0;min-height:100vh}
+ .sidebar{border-radius:14px 0 0 14px;padding:24px 13px 18px;gap:28px;background:linear-gradient(180deg,#003d3b,#004b45 70%,#003936)}
+ .brand{padding:0 7px}.brandmark{width:48px;height:48px;border-radius:50%}
+ .brand strong{font-size:19px}.brand small{font-size:11px}
+ .side-note{background:linear-gradient(155deg,#087f57,#087e94);margin-top:auto;min-height:170px}
+ .main{background:#f4faff;border:1px solid #dcecf2;border-radius:0 14px 14px 0;overflow:hidden}
+ .topbar{height:54px;padding:0 24px;background:#fafdff;border-bottom:0}
+ .crumb{font-size:12px}.top-actions:before{content:"⌕  Buscar no sistema...";display:block;width:220px;padding:10px 14px;border-radius:25px;background:#eff7fb;border:1px solid #deedf4;color:#78929b;font-size:11px}
+ .content{max-width:none;padding:0 12px 24px}
+ #view-inicio>.welcome{position:relative;display:flex;align-items:flex-start;justify-content:flex-start;min-height:236px;margin:0 0 11px;padding:28px 30px;border-radius:14px;overflow:hidden;color:white;background:linear-gradient(90deg,#003f3b 0%,#005b4a88 36%,#003d3b12 100%),url('https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1800&q=85') center 52%/cover no-repeat;box-shadow:0 5px 15px #075b5020}
+ #view-inicio>.welcome:after{content:"🌿  Vamos juntos\\A por um futuro\\A melhor!";white-space:pre-line;position:absolute;right:20px;top:24px;width:185px;min-height:72px;padding:17px 15px 17px 60px;border-radius:12px;background:linear-gradient(120deg,#16a34aee,#078a86e8);font-weight:800;font-size:15px;line-height:1.35;box-shadow:0 8px 22px #003b3940}
+ #view-inicio>.welcome>div{position:relative;z-index:1;max-width:380px}
+ #view-inicio>.welcome .eyebrow{color:#b9f4cc}
+ #view-inicio>.welcome h1{font-size:32px;max-width:300px;letter-spacing:-.8px;margin:8px 0}
+ #view-inicio>.welcome .sub{color:#f0fff9;font-size:13px;max-width:350px}
+ #view-inicio>.welcome .primary{margin-top:13px;border-radius:28px;padding:11px 17px}
+ .stats{gap:11px;margin:0 0 11px}
+ .stat{border-radius:13px;padding:14px 15px;min-height:87px}
+ .stat-top{font-size:11px;color:#305b62}
+ .stat-num{font-size:26px;margin:5px 0 1px}
+ .stat-foot{font-size:10px}
+ .stat-icon{border-radius:50%;width:40px;height:40px;font-size:19px}
+ .grid-main{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(205px,.8fr);gap:11px;align-items:stretch}
+ .grid-main>.panel{padding:15px;border-radius:13px}
+ .panel-head{margin-bottom:12px}
+ .panel h2{font-size:14px}
+ .muted{font-size:10px}
+ .mapmock{height:240px}
+ .issue{gap:8px;padding:11px 0}
+ .issue-icon{width:33px;height:33px;border-radius:50%;font-size:16px}
+ .issue-info b{font-size:11px}.issue-info small{font-size:10px}
+ .tag{font-size:9px;padding:5px 7px}
+ .quick-actions{display:flex;flex-direction:column;gap:9px}
+ .quick-actions .panel-head{margin-bottom:0}
+ .quick-btn{width:100%;border:0;border-radius:11px;padding:12px 10px;display:flex;align-items:center;gap:9px;text-align:left;font-size:11px;font-weight:800}
+ .quick-btn span{font-size:17px}.quick-btn b{margin-left:auto}
+ .quick-btn.green{background:linear-gradient(100deg,#24b54d,#1aa75c);color:white}
+ .quick-btn.blue{background:linear-gradient(100deg,#1988dc,#2686d8);color:white}
+ .quick-btn.mint{background:linear-gradient(100deg,#d7f6e4,#c8f1df);color:#075b43}
+ .quick-btn.purple{background:linear-gradient(100deg,#9170e8,#7858d9);color:white}
+ .quick-quote{text-align:center;font-family:Georgia,serif;font-style:italic;font-size:14px;line-height:1.4;color:#08764c;margin:auto 4px 0}
+ .bottom-grid{gap:11px;margin-top:11px}
+ .bottom-grid>.panel{padding:16px;border-radius:13px}
+ .footer{padding-top:18px}
+}
+
 </style>
 </head>
 <body>
@@ -111,7 +160,14 @@ body{background:linear-gradient(135deg,#f3fbff 0%,#f3fbf5 60%,#eef8ff 100%)}
       <div class="issue"><div class="issue-icon">🗑️</div><div class="issue-info"><b>Descarte irregular de resíduos</b><small>Registro de demonstração · Hoje</small></div><span class="tag">Pendente</span></div>
       <div class="issue"><div class="issue-icon">🔥</div><div class="issue-info"><b>Foco de queimada</b><small>Registro de demonstração · Ontem</small></div><span class="tag red">Atenção</span></div>
       <div class="issue"><div class="issue-icon">💧</div><div class="issue-info"><b>Desperdício de água</b><small>Registro de demonstração · Esta semana</small></div><span class="tag blue">Em análise</span></div>
-    </div></div>
+    </div>
+    <div class="panel quick-actions"><div class="panel-head"><h2>Ações rápidas</h2></div>
+      <button class="quick-btn green" onclick="showView('registrar')"><span>🌿</span>Registrar ocorrência <b>→</b></button>
+      <button class="quick-btn blue" onclick="showView('mapa')"><span>📍</span>Ver mapa <b>→</b></button>
+      <button class="quick-btn mint" onclick="showView('guia')"><span>📖</span>Guia sustentável <b>→</b></button>
+      <button class="quick-btn purple" onclick="showView('guia')"><span>👥</span>Ações comunitárias <b>→</b></button>
+      <p class="quick-quote">“O futuro da nossa cidade começa com você!” 🌱</p>
+    </div>
   </div>
   <div class="bottom-grid">
     <div class="panel"><div class="panel-head"><h2>Como você pode ajudar</h2><span class="muted">Comece agora</span></div>
