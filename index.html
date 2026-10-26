@@ -409,7 +409,36 @@ document.getElementById('export-reports').addEventListener('click',()=>{const bl
 function initMap(id){if(maps[id]||!document.getElementById(id)||!window.L)return;try{const map=L.map(id,{scrollWheelZoom:false}).setView([-5.1,-42.8],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);maps[id]=map;setTimeout(()=>{map.invalidateSize();renderMap()},150)}catch(err){console.error('Falha ao iniciar mapa '+id,err);const el=document.getElementById(id);if(el)el.innerHTML='<div class="map-fallback">Não foi possível carregar o mapa. Confira sua conexão e atualize a página.</div>'}}
 function distanceKm(a,b){const rad=n=>n*Math.PI/180,R=6371,dLat=rad(b[0]-a[0]),dLon=rad(b[1]-a[1]),x=Math.sin(dLat/2)**2+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
 function locateUser(){const msg=document.getElementById('map-message');if(!navigator.geolocation){if(msg)msg.textContent='Este navegador não oferece serviço de localização.';return}if(msg)msg.textContent='Aguardando sua permissão para acessar a localização…';navigator.geolocation.getCurrentPosition(pos=>{userPosition=[pos.coords.latitude,pos.coords.longitude];initMap('full-map');const map=maps['full-map'];if(map){map.setView(userPosition,14);if(map._userMarker)map.removeLayer(map._userMarker);map._userMarker=L.circleMarker(userPosition,{radius:9,color:'#fff',weight:3,fillColor:'#087f5b',fillOpacity:1}).addTo(map).bindPopup('Você está aqui').openPopup();map.invalidateSize()}renderMap();},err=>{const messages={1:'Permissão negada. Autorize a localização nas configurações do navegador e tente novamente.',2:'Não foi possível determinar sua localização. Verifique o GPS ou a conexão.',3:'A solicitação demorou demais. Tente novamente.'};if(msg)msg.textContent=messages[err.code]||'Não foi possível obter sua localização.';},{enableHighAccuracy:true,timeout:15000,maximumAge:60000})}
-function renderMap(){if(!window.L)return;let points=[],nearby=[];reports.filter(r=>r.lat&&r.lng).forEach(r=>{const lat=Number(r.lat),lng=Number(r.lng);if(!Number.isFinite(lat)||!Number.isFinite(lng))return;const point=[lat,lng],distance=userPosition?distanceKm(userPosition,point):null;points.push(point);if(distance!==null&&distance<=10)nearby.push({...r,distance});Object.entries(maps).forEach(([key,m])=>{m.eachLayer(layer=>{if(layer instanceof L.Marker&&layer!==m._userMarker)m.removeLayer(layer)});L.marker(point).addTo(m).bindPopup('<b>'+escapeHtml(r.category)+'</b><br>'+escapeHtml(r.place||'Local não informado')+'<br>Status: '+escapeHtml(r.status)+(distance!==null?'<br>Distância: '+distance.toFixed(1)+' km':''))})});const msg=document.getElementById('map-message');const list=document.getElementById('nearby-list');if(msg){if(!userPosition)msg.textContent=points.length?points.length+' ocorrência(s) compartilhada(s) com coordenadas. Autorize sua localização para filtrar as que estão a até 10 km.':'Ainda não há ocorrências com coordenadas para exibir. Relatos sem latitude e longitude não podem virar marcadores.';else msg.textContent=nearby.length?nearby.length+' ocorrência(s) compartilhada(s) encontrada(s) em até 10 km.':'Nenhuma ocorrência compartilhada com coordenadas em até 10 km da sua localização.'}if(list)list.innerHTML=userPosition&&nearby.length?[...nearby].sort((a,b)=>a.distance-b.distance).map(r=>'<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category)+'</b><small>'+escapeHtml(r.place||'Local não informado')+' · '+r.distance.toFixed(1)+' km</small></div><span class="tag '+(r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status)+'</span></div>').join(''):'';Object.values(maps).forEach(m=>{if(userPosition){const coords=[userPosition,...nearby.map(r=>[Number(r.lat),Number(r.lng)])];if(coords.length>1)m.fitBounds(coords,{padding:[25,25],maxZoom:14});else m.setView(userPosition,14)}else if(points.length===1)m.setView(points[0],14);else if(points.length>1)m.fitBounds(points,{padding:[25,25],maxZoom:14});if(m._userMarker)m._userMarker.bringToFront()})}
+function renderMap(){
+ if(!window.L)return;
+ const points=[],nearby=[];
+ const located=reports.filter(r=>r.lat!==null&&r.lat!==undefined&&r.lng!==null&&r.lng!==undefined&&r.lat!==''&&r.lng!=='');
+ located.forEach(r=>{
+  const lat=Number(r.lat),lng=Number(r.lng);
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180)return;
+  const point=[lat,lng],distance=userPosition?distanceKm(userPosition,point):null;
+  points.push({point,report:r});
+  if(distance!==null&&distance<=10)nearby.push({...r,distance});
+ });
+ Object.values(maps).forEach(m=>{
+  m.eachLayer(layer=>{if(layer instanceof L.Marker&&layer!==m._userMarker)m.removeLayer(layer)});
+  points.forEach(({point,report:r})=>{
+   L.marker(point).addTo(m).bindPopup('<b>'+escapeHtml(r.category)+'</b><br>'+escapeHtml(r.place||'Local não informado')+'<br>Status: '+escapeHtml(r.status));
+  });
+  if(userPosition){
+   const coords=[userPosition,...nearby.map(r=>[Number(r.lat),Number(r.lng)])];
+   if(coords.length>1)m.fitBounds(coords,{padding:[25,25],maxZoom:14});else m.setView(userPosition,14);
+  }else if(points.length===1)m.setView(points[0].point,14);
+  else if(points.length>1)m.fitBounds(points.map(p=>p.point),{padding:[25,25],maxZoom:14});
+  if(m._userMarker)m._userMarker.bringToFront();
+ });
+ const msg=document.getElementById('map-message'),list=document.getElementById('nearby-list');
+ if(msg){
+  if(!userPosition)msg.textContent=points.length?points.length+' ocorrência(s) compartilhada(s) com coordenadas. Autorize sua localização para filtrar as que estão a até 10 km.':'Ainda não há ocorrências com coordenadas para exibir. Os relatos sem latitude e longitude continuam visíveis na lista de ocorrências.';
+  else msg.textContent=nearby.length?nearby.length+' ocorrência(s) compartilhada(s) encontrada(s) em até 10 km.':'Nenhuma ocorrência compartilhada com coordenadas em até 10 km da sua localização.';
+ }
+ if(list)list.innerHTML=userPosition&&nearby.length?[...nearby].sort((a,b)=>a.distance-b.distance).map(r=>'<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category)+'</b><small>'+escapeHtml(r.place||'Local não informado')+' · '+r.distance.toFixed(1)+' km</small></div><span class="tag '+(r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status)+'</span></div>').join(''):'';
+}
 document.getElementById('refresh-map').addEventListener('click',()=>{initMap('full-map');renderMap();maps['full-map']?.invalidateSize()});
 document.getElementById('locate-me').addEventListener('click',locateUser);
 document.querySelectorAll('.action-interest').forEach(b=>b.addEventListener('click',()=>{const name=b.dataset.action;if(!interests.includes(name))interests.push(name);localStorage.setItem(INTEREST,JSON.stringify(interests));renderInterests();b.textContent='✓ Interesse registrado';setTimeout(()=>b.textContent='Tenho interesse',1400)}));
