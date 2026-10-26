@@ -233,11 +233,11 @@ body{background:#f3f9fc;color:var(--ink)}
 <section class="view" id="view-perfil">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Sua participação importa</div><h2 style="font-size:25px;margin-top:5px">Meu perfil</h2><p>Personalize como você aparece neste dispositivo.</p></div></div>
   <section class="panel" style="margin-bottom:16px">
-  <h3 style="margin-top:0">🔐 Conta EcoCidade</h3><p class="muted">Crie sua conta ou entre para preparar o acesso aos recursos compartilhados.</p>
+  <h3 style="margin-top:0">🔐 Acesso do administrador</h3><p class="muted">Visitantes podem registrar e consultar ocorrências sem conta. Somente o administrador precisa entrar para gerenciar o sistema.</p>
   <form id="auth-form" class="form-grid">
     <div class="field full"><label for="auth-email">E-mail</label><input id="auth-email" type="email" autocomplete="email" required maxlength="254" placeholder="voce@exemplo.com"></div>
     <div class="field full"><label for="auth-password">Senha (mínimo 8 caracteres)</label><input id="auth-password" type="password" autocomplete="current-password" required minlength="8" maxlength="72" placeholder="Digite uma senha segura"></div>
-    <div class="field full" style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" type="submit" id="auth-submit">Entrar</button><button class="secondary" type="button" id="auth-signup">Criar conta</button><button class="secondary" type="button" id="auth-signout" hidden>Sair da conta</button></div>
+    <div class="field full" style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" type="submit" id="auth-submit">Entrar</button><button class="secondary" type="button" id="auth-signout" hidden>Sair da conta</button></div>
     <div class="field full"><span id="auth-message" class="muted" aria-live="polite">Conectando ao serviço de autenticação…</span></div>
   </form>
 </section>
@@ -266,11 +266,11 @@ const firebaseConfig = {
 };
 let firebaseApp=null, firebaseAuth=null, firestoreDb=null, authUser=null, isAdmin=false;
 const authForm=document.getElementById('auth-form'),authMessage=document.getElementById('auth-message');
-const authSubmit=document.getElementById('auth-submit'),authSignup=document.getElementById('auth-signup'),authSignout=document.getElementById('auth-signout');
+const authSubmit=document.getElementById('auth-submit'),authSignout=document.getElementById('auth-signout');
 function authStatus(message,isError=false){if(authMessage){authMessage.textContent=message;authMessage.style.color=isError?'#b42318':''}}
 function updateAuthUI(user,admin=false){
  authUser=user||null;isAdmin=!!admin;
- authSubmit.textContent=authUser?'Conta conectada':'Entrar';authSubmit.disabled=!!authUser;authSignup.hidden=!!authUser;authSignout.hidden=!authUser;
+ authSubmit.textContent=authUser?(isAdmin?'Administrador conectado':'Conta conectada — sem acesso administrativo'):'Entrar como administrador';authSubmit.disabled=!!authUser;authSignout.hidden=!authUser;
  document.getElementById('auth-email').disabled=!!authUser;document.getElementById('auth-password').disabled=!!authUser;
  const adminNav=document.getElementById('admin-nav');if(adminNav)adminNav.hidden=!isAdmin;
  if(!isAdmin&&document.getElementById('view-admin')?.classList.contains('active'))go('inicio');
@@ -298,20 +298,10 @@ async function initFirebase(){
 authForm?.addEventListener('submit',async e=>{
  e.preventDefault();if(!firebaseAuth){authStatus('O Firebase ainda não está disponível. Atualize a página.',true);return}
  const email=document.getElementById('auth-email').value.trim(),password=document.getElementById('auth-password').value;
- authSubmit.disabled=true;authSignup.disabled=true;authStatus('Entrando…');
+ authSubmit.disabled=true;authStatus('Verificando acesso administrativo…');
  try{await firebaseAuth.signInWithEmailAndPassword(email,password);authStatus('Login realizado com sucesso.')}
  catch(err){authStatus(authErrorMessage(err),true)}
- finally{authSubmit.disabled=!!authUser;authSignup.disabled=!!authUser}
-});
-authSignup?.addEventListener('click',async()=>{
- if(!firebaseAuth){authStatus('O Firebase ainda não está disponível. Atualize a página.',true);return}
- const email=document.getElementById('auth-email').value.trim(),password=document.getElementById('auth-password').value;
- if(!email||!password){authStatus('Informe o e-mail e uma senha de pelo menos 8 caracteres.',true);return}
- if(password.length<8){authStatus('A senha precisa ter pelo menos 8 caracteres.',true);return}
- authSignup.disabled=true;authSubmit.disabled=true;authStatus('Criando sua conta…');
- try{await firebaseAuth.createUserWithEmailAndPassword(email,password);authStatus('Conta criada e conectada.')}
- catch(err){authStatus(authErrorMessage(err),true)}
- finally{authSignup.disabled=!!authUser;authSubmit.disabled=!!authUser}
+ finally{authSubmit.disabled=!!authUser}
 });
 function authErrorMessage(err){
  const messages={'auth/invalid-email':'O e-mail informado não é válido.','auth/user-not-found':'Não encontramos uma conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/invalid-credential':'E-mail ou senha incorretos.','auth/email-already-in-use':'Este e-mail já está cadastrado.','auth/weak-password':'Use uma senha mais forte, com pelo menos 8 caracteres.','auth/operation-not-allowed':'Ative E-mail/senha em Firebase Authentication → Método de login.','auth/network-request-failed':'Falha de conexão. Verifique sua internet.'};
@@ -385,13 +375,13 @@ function startLiveReports(){
 async function loadCloudReports(){startLiveReports()}
 document.getElementById('report-form').addEventListener('submit',async e=>{
  e.preventDefault();const category=document.getElementById('category').value,description=document.getElementById('description').value.trim();if(!category||!description)return;
- if(!authUser){document.getElementById('form-message').textContent='Entre ou crie uma conta na seção Meu perfil antes de enviar uma ocorrência.';go('perfil');return}
+ 
  if(!firestoreDb){document.getElementById('form-message').textContent='O Firebase ainda não está conectado. Atualize a página.';return}
  const file=document.getElementById('photo').files[0];
  if(file){document.getElementById('form-message').textContent='O envio de fotos será habilitado após configurar o Firebase Storage. Remova a foto e envie o relato sem imagem por enquanto.';return}
  const place=document.getElementById('place').value.trim(),lat=document.getElementById('latitude').value,lng=document.getElementById('longitude').value,button=e.target.querySelector('button[type="submit"]');button.disabled=true;
  try{
-  await firestoreDb.collection('ocorrencias').add({categoria:category,local:place,descricao:description,latitude:lat?Number(lat):null,longitude:lng?Number(lng):null,status:'Pendente',ownerUid:authUser.uid,criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
+  await firestoreDb.collection('ocorrencias').add({categoria:category,local:place,descricao:description,latitude:lat?Number(lat):null,longitude:lng?Number(lng):null,status:'Pendente',...(authUser?{ownerUid:authUser.uid}:{}),criadoEm:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('form-message').textContent='Ocorrência enviada ao Firebase e compartilhada com a comunidade.';
   e.target.reset();clearLoc();document.getElementById('photo-preview').style.display='none';await loadCloudReports();setTimeout(()=>go('ocorrencias'),350);
  }catch(err){console.error('Falha ao salvar ocorrência no Firebase:',err);const code=err&&err.code?err.code:'erro-desconhecido';let help='Erro ('+code+'). ';if(code==='permission-denied')help+='O Firestore recusou o envio. Publique as regras do arquivo firestore.rules no Console do Firebase.';else if(code==='unauthenticated')help+='Sua sessão expirou. Entre novamente em Meu perfil.';else if(code==='auth/operation-not-allowed')help+='Ative o método E-mail/senha em Firebase > Authentication > Sign-in method.';else if(code==='unavailable'||code==='deadline-exceeded')help+='Falha de conexão com o Firebase. Verifique a internet e tente novamente.';else help+=(err&&err.message?err.message:'Verifique o login e as regras do Firestore.');document.getElementById('form-message').textContent=help}
