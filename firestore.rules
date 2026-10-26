@@ -12,13 +12,17 @@ service cloud.firestore {
       // Leitura pública dos relatos comunitários; não inclua dados pessoais nos documentos.
       allow read: if true;
 
-      // Somente usuários autenticados podem criar relatos novos, sempre pendentes e em seu nome.
-      allow create: if signedIn()
-        && request.resource.data.keys().hasAll([
+      // Visitantes podem enviar relatos sem conta. Limites de campos reduzem entradas inválidas.
+      allow create: if request.resource.data.keys().hasAll([
           'categoria', 'local', 'descricao', 'latitude', 'longitude',
-          'status', 'ownerUid', 'criadoEm'
+          'status', 'criadoEm'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'categoria', 'local', 'descricao', 'latitude', 'longitude',
+          'status', 'criadoEm', 'ownerUid'
         ])
         && request.resource.data.categoria is string
+        && request.resource.data.categoria.size() > 0
         && request.resource.data.categoria.size() <= 120
         && request.resource.data.local is string
         && request.resource.data.local.size() <= 120
@@ -26,10 +30,10 @@ service cloud.firestore {
         && request.resource.data.descricao.size() > 0
         && request.resource.data.descricao.size() <= 1000
         && request.resource.data.status == 'Pendente'
-        && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.criadoEm == request.time
         && (request.resource.data.latitude == null || request.resource.data.latitude is number)
-        && (request.resource.data.longitude == null || request.resource.data.longitude is number);
+        && (request.resource.data.longitude == null || request.resource.data.longitude is number)
+        && (!('ownerUid' in request.resource.data.keys()) || (signedIn() && request.resource.data.ownerUid == request.auth.uid));
 
       // A claim admin só pode ser atribuída por código confiável usando Firebase Admin SDK.
       allow update, delete: if isAdmin();
