@@ -281,7 +281,7 @@ async function syncRemoteProfile(user){
  const name=(document.getElementById('profile-name')?.value||profile.name||'').trim(),city=(document.getElementById('profile-city')?.value||profile.city||'').trim();
  await firestoreDb.collection('perfis').doc(user.uid).set({nome:name,cidade:city,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
 }
-async function refreshAdminClaim(user){if(!user)return false;try{return (await user.getIdTokenResult(true)).claims.admin===true}catch(e){console.warn('Não foi possível verificar a permissão administrativa.',e);return false}}
+async function refreshAdminClaim(user){if(!user)return false;try{await user.reload();return (user.email||'').toLowerCase()==='expeditomar28@gmail.com'&&user.emailVerified===true}catch(e){console.warn('Não foi possível verificar a conta administrativa.',e);return false}}
 async function initFirebase(){
  if(!window.firebase){authStatus('Não foi possível carregar o Firebase. Verifique sua conexão.',true);return}
  try{
