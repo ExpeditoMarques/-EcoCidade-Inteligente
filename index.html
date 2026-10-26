@@ -299,7 +299,7 @@ authForm?.addEventListener('submit',async e=>{
  e.preventDefault();if(!firebaseAuth){authStatus('O Firebase ainda não está disponível. Atualize a página.',true);return}
  const email=document.getElementById('auth-email').value.trim(),password=document.getElementById('auth-password').value;
  authSubmit.disabled=true;authStatus('Verificando acesso administrativo…');
- try{await firebaseAuth.signInWithEmailAndPassword(email,password);authStatus('Login realizado com sucesso.')}
+ try{const credential=await firebaseAuth.signInWithEmailAndPassword(email,password);await credential.user.reload();if((credential.user.email||'').toLowerCase()!=='expeditomar28@gmail.com'||!credential.user.emailVerified){await firebaseAuth.signOut();authStatus('Acesso restrito ao administrador expeditomar28@gmail.com. Confirme também o endereço de e-mail no Firebase.',true);return}authStatus('Login administrativo realizado com sucesso.')}
  catch(err){authStatus(authErrorMessage(err),true)}
  finally{authSubmit.disabled=!!authUser}
 });
