@@ -269,7 +269,7 @@ async function syncRemoteProfile(user){
  if(!firestoreDb||!user||!user.emailVerified)return;
  const name=(document.getElementById('profile-name')?.value||profile.name||'').trim(),city=(document.getElementById('profile-city')?.value||profile.city||'').trim();
  if(!name||!city)return;
- await firestoreDb.collection('perfis').doc(user.uid).set({nome:name,cidade:city,email:user.email||'',atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+ await firestoreDb.collection('perfis').doc(user.uid).set({nome:name,cidade:city,email:user.email||'',fotoURL:profilePhotoURL||'',atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
 }
 async function refreshAdminClaim(user){if(!user)return false;try{await user.reload();return (user.email||'').toLowerCase()==='expeditomar28@gmail.com'&&user.emailVerified===true}catch(e){console.warn('Não foi possível verificar a conta administrativa.',e);return false}}
 async function initFirebase(){
@@ -373,6 +373,13 @@ document.getElementById('admin-report-list')?.addEventListener('change',async e=
 document.getElementById('admin-report-list')?.addEventListener('click',async e=>{const id=e.target.dataset.adminDelete;if(!id||!authUser||!isAdmin||!firestoreDb)return;if(!confirm('Excluir permanentemente esta ocorrência? Esta ação não pode ser desfeita.'))return;try{await firestoreDb.collection('ocorrencias').doc(id).delete();await renderAdmin();await loadCloudReports()}catch(err){alert('Não foi possível excluir. Verifique as regras do Firestore.')}});
 function typeIcon(t){if(/queimada/i.test(t))return '🔥';if(/água|rio|córrego|esgoto/i.test(t))return '💧';if(/árvore|verde/i.test(t))return '🌱';if(/lixo|descarte|resíduo/i.test(t))return '♻️';return '⚠️'}
 function renderRecent(){const el=document.getElementById('recent-list');const list=[...reports].reverse().slice(0,4);el.innerHTML=list.length?list.map(r=>'<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category)+'</b><small>'+escapeHtml(r.place||'Local não informado')+' · '+new Date(r.created).toLocaleDateString('pt-BR')+'</small></div><span class="tag '+(r.status==='Resolvida'?'':r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status)+'</span></div>').join(''):'<div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div>'}
+function renderMyReports(){
+ const el=document.getElementById('my-reports-list');if(!el)return;
+ if(!authUser){el.innerHTML='<p class="muted">Entre na sua conta para consultar suas ocorrências.</p>';return}
+ const mine=reports.filter(r=>r.ownerUid===authUser.uid).sort((a,b)=>new Date(b.created)-new Date(a.created));
+ if(!mine.length){el.innerHTML='<p class="muted">Ainda não há ocorrências vinculadas a esta conta. Para associar um novo relato, entre antes de enviá-lo.</p>';return}
+ el.innerHTML=mine.map(r=>'<article class="report"><div><b>'+escapeHtml(r.category||'Ocorrência ambiental')+'</b><div class="muted">'+escapeHtml(r.municipio||r.municipioNome||'Município não informado')+' · '+escapeHtml(r.place||'Local não informado')+'</div><p>'+escapeHtml(r.description||'')+'</p><span class="tag">'+escapeHtml(r.status||'Pendente')+'</span></div></article>').join('');
+}
 function renderReports(){const el=document.getElementById('report-list');if(!reports.length){el.innerHTML='<div class="panel empty">🌿<br><b>Nenhuma ocorrência registrada ainda.</b><br>Quando você salvar um relato, ele aparecerá aqui.</div>';return}el.innerHTML=[...reports].reverse().map(r=>'<article class="report"><div style="display:flex;gap:12px;min-width:0"><div class="stat-icon">'+typeIcon(r.category)+'</div><div><b>'+escapeHtml(r.category)+'</b><div class="muted">'+escapeHtml(r.place||'Local não informado')+' · '+new Date(r.created).toLocaleString('pt-BR')+'</div><p style="margin:7px 0;font-size:12px;white-space:pre-wrap">'+escapeHtml(r.description)+'</p>'+(r.photo?'<img src="'+r.photo+'" alt="Foto do relato" style="max-width:180px;max-height:130px;border-radius:10px">':'')+(r.lat&&r.lng?'<div class="muted">📍 '+Number(r.lat).toFixed(5)+', '+Number(r.lng).toFixed(5)+'</div>':'')+'</div></div><div style="display:grid;gap:7px;min-width:125px"><select aria-label="Status do relato" data-status="'+r.id+'" style="padding:7px;border-radius:8px;border:1px solid var(--line)">'+['Pendente','Em andamento','Resolvida'].map(s=>'<option '+(r.status===s?'selected':'')+'>'+s+'</option>').join('')+'</select><button class="secondary" data-delete="'+r.id+'">Excluir</button></div></article>').join('')}
 let reportsUnsubscribe=null;
 function startLiveReports(){
@@ -382,7 +389,7 @@ function startLiveReports(){
   const cloud=snap.docs.map(d=>{const x=d.data();const created=x.criadoEm?.toDate?.().toISOString?.()||x.createdEm?.toDate?.().toISOString?.()||x.created||new Date().toISOString();return {id:d.id,category:x.categoria||x.category||x.titulo||'Outro problema ambiental',place:x.local||x.place||'',description:x.descricao||x.description||'',lat:x.latitude??x.lat??null,lng:x.longitude??x.lng??null,photo:'',status:x.status||'Pendente',created,cloud:true,ownerUid:x.ownerUid||null}});
   cloud.sort((x,y)=>new Date(y.created)-new Date(x.created));
   const local=load(STORE,[]).filter(r=>!r.cloud);
-  reports=[...cloud,...local];render();renderMap();
+  reports=[...cloud,...local];render();renderMap();renderMyReports();renderAchievements();
  },err=>{console.error('Erro ao acompanhar ocorrências em tempo real:',err);const msg=document.getElementById('map-message');if(msg)msg.textContent='Não foi possível carregar as ocorrências compartilhadas. Confira as regras de leitura do Firestore.';render()});
 }
 async function loadCloudReports(){startLiveReports()}
