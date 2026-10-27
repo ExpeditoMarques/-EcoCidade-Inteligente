@@ -131,6 +131,21 @@ service cloud.firestore {
         && request.resource.data.email is string && request.resource.data.email.size() <= 254;
       allow delete: if isAdmin();
     }
+    match /userStats/{uid} {
+      // Cada visitante lê e atualiza apenas a própria pontuação; o administrador geral pode auditar.
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.auth.token.email_verified == true
+        && request.resource.data.keys().hasOnly(['points','quizAwarded','badges','answeredQuestions','updatedAt'])
+        && request.resource.data.points is number
+        && request.resource.data.points >= 0
+        && request.resource.data.points <= 100000
+        && request.resource.data.quizAwarded is bool
+        && request.resource.data.badges is list
+        && request.resource.data.answeredQuestions is list;
+      allow delete: if isAdmin();
+    }
+
     match /municipios/{municipioId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
