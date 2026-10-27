@@ -69,7 +69,7 @@ service cloud.firestore {
 
     match /adminInvites/{token} {
       // O token aleatório funciona como segredo do convite. Só o admin geral cria convites.
-      allow read: if isAdmin() || (signedIn() && resource.data.used == false);
+      allow read: if isAdmin() || (resource.data.used == false && resource.data.expiresAt > request.time);
       allow create: if isAdmin()
         && request.resource.data.token == token
         && request.resource.data.role == 'municipal_admin'
