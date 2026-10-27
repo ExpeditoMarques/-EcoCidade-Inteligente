@@ -26,7 +26,7 @@
   <div class="brand"><div class="logo brand-mark" aria-label="Logo EcoCidade Inteligente" role="img"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="ecoBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25c66a"/><stop offset="1" stop-color="#087c91"/></linearGradient><linearGradient id="ecoLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d5ff8d"/><stop offset="1" stop-color="#20b65a"/></linearGradient></defs><circle cx="32" cy="32" r="31" fill="url(#ecoBg)"/><circle cx="32" cy="32" r="27" fill="none" stroke="#ffffff" stroke-opacity=".25"/><circle cx="44" cy="15" r="5" fill="#ffe875"/><path d="M12 43h40v8H12z" fill="#b7f4ed"/><path d="M16 34h8v9h-8zm11-8h9v17h-9zm12 4h8v13h-8z" fill="#e8fbff"/><path d="M14 27C15 14 29 8 39 10 36 23 27 32 14 27Z" fill="url(#ecoLeaf)"/><path d="M14 27c8-2 15-7 22-14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/><path d="M20 39c-1-10 7-17 17-18 1 10-6 18-17 18Z" fill="#48df82"/><path d="M21 38l12-13" stroke="#eaffd5" stroke-width="2" stroke-linecap="round"/><path d="M10 53c9-4 15-2 22 0s13 2 22-1" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2" stroke-linecap="round"/></svg></div><div><strong>EcoCidade<br><span class="brand-intel">Inteligente</span></strong><small>Tecnologia que cuida do planeta</small></div></div>
   <div><div class="navlabel">Menu principal</div><nav class="nav" aria-label="Menu principal">
     <button class="active" data-view="inicio"><span class="ico">⌂</span>Início</button>
-    <button data-view="mapa"><span class="ico">⌖</span>Mapa ambiental</button>
+    <button data-view="mapa"><span class="ico">⌖</span>Mapa ambiental</button>\n    <button data-view="monitoramento"><span class="ico">🔥</span>Queimadas</button>
     <button data-view="registrar"><span class="ico">⊕</span>Registrar ocorrência</button>
     <button data-view="ocorrencias"><span class="ico">▤</span>Ocorrências</button>
     <button data-view="guia"><span class="ico">♧</span>Guia sustentável</button>
@@ -40,6 +40,21 @@
 <div class="main">
 <header class="topbar"><div class="crumb">EcoCidade / <b id="crumb-title">Início</b></div><div class="top-actions"><input class="search" id="search-all" placeholder="⌕  Buscar no sistema..." aria-label="Buscar"><button class="install-app" id="install-app" type="button" hidden>＋ Instalar app</button><button class="secondary" id="notifications-button" type="button" aria-label="Ativar notificações">🔔 Avisos</button><div class="status"><span class="dot"></span> Comunidade sustentável</div><div class="avatar">E</div></div></header>
 <main class="content">
+<section class="view" id="view-monitoramento">
+  <div class="section-title"><div><h2>Monitoramento de queimadas</h2><p>Selecione o município para consultar as fontes oficiais e organizar o painel local.</p></div></div>
+  <div class="panel">
+    <div class="form-grid">
+      <div class="field"><label for="monitor-state">Estado</label><select id="monitor-state"><option value="MA" selected>Maranhão (MA)</option><option value="ALL">Todos os estados</option></select></div>
+      <div class="field"><label for="monitor-city">Município</label><select id="monitor-city"><option value="">Carregando municípios…</option></select></div>
+      <div class="field"><label for="monitor-start">Data inicial</label><input id="monitor-start" type="date"></div>
+      <div class="field"><label for="monitor-end">Data final</label><input id="monitor-end" type="date"></div>
+    </div>
+    <div class="notice" style="margin-top:16px">Os focos de calor são detecções por satélite e não confirmam, isoladamente, um incêndio. Esta primeira etapa abre a consulta oficial do INPE com o município selecionado; os dados do painel local são os relatos enviados ao EcoCidade, não uma contagem automática de focos do INPE.</div>
+    <div class="accessibility-controls"><button class="primary" id="open-inpe-query" type="button">Consultar no INPE ↗</button><button class="secondary" id="save-monitor-city" type="button">Definir município do painel</button></div>
+    <p class="muted" id="monitor-message" role="status" style="margin-top:12px">Carregando a lista oficial de municípios do IBGE…</p>
+    <div class="panel" style="margin-top:16px;background:#f8fcf9;box-shadow:none"><div class="panel-head"><h2>Município selecionado</h2><span class="tag green" id="selected-city-state">Maranhão</span></div><div id="selected-city-summary">Escolha um município para preparar a consulta.</div><p class="muted">Fontes: <a href="https://www.inpe.br/queimadas/bdqueimadas/" target="_blank" rel="noopener">BDQueimadas / INPE</a> · <a href="https://servicodados.ibge.gov.br/api/v1/localidades/estados/MA/municipios" target="_blank" rel="noopener">Lista de municípios / IBGE</a></p></div>
+  </div>
+</section>
 <section class="view active" id="view-inicio">
   <div class="hero"><div class="hero-copy"><div class="eyebrow">🌎 Nosso futuro começa agora</div><h1>Juntos por uma cidade mais verde e sustentável!</h1><p>Registre problemas ambientais, acompanhe os relatos da comunidade e participe de ações que fazem a diferença.</p><button class="primary" data-go="registrar">＋ Registrar ocorrência <span>→</span></button></div></div>
   <div class="stats">
@@ -324,7 +339,69 @@ document.getElementById('report-list').addEventListener('change',async e=>{if(!e
 document.getElementById('report-list').addEventListener('click',async e=>{const id=e.target.dataset.delete;if(!id||!confirm('Excluir este relato?'))return;const r=reports.find(x=>x.id===id);if(!r)return;if(r.cloud){if(!isAdmin){alert('Somente administradores podem excluir ocorrências compartilhadas.');return}try{await firestoreDb.collection('ocorrencias').doc(id).delete();await loadCloudReports()}catch(err){alert('Não foi possível excluir a ocorrência.')}}else{reports=reports.filter(x=>x.id!==id);save();render()}});
 document.getElementById('clear-reports').addEventListener('click',()=>{if(reports.length&&confirm('Apagar todos os relatos salvos neste navegador?')){reports=[];save();render()}});
 document.getElementById('export-reports').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(reports,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ecocidade-ocorrencias.json';a.click();URL.revokeObjectURL(url)});
-function initMap(id){if(maps[id]||!document.getElementById(id)||!window.L)return;try{const map=L.map(id,{scrollWheelZoom:false}).setView([-5.1,-42.8],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);maps[id]=map;setTimeout(()=>{map.invalidateSize();renderMap()},150)}catch(err){console.error('Falha ao iniciar mapa '+id,err);const el=document.getElementById(id);if(el)el.innerHTML='<div class="map-fallback">Não foi possível carregar o mapa. Confira sua conexão e atualize a página.</div>'}}
+
+// Monitoramento por município: a lista vem da API pública do IBGE.
+// A consulta oficial é aberta no BDQueimadas; não simulamos dados do INPE dentro do painel.
+const monitorCity=document.getElementById('monitor-city');
+const monitorState=document.getElementById('monitor-state');
+const monitorMessage=document.getElementById('monitor-message');
+const monitorNames=new Map();
+async function loadMonitorMunicipalities(){
+ try{
+  const state=monitorState.value;
+  let url=state==='ALL'?'https://servicodados.ibge.gov.br/api/v1/localidades/municipios':'https://servicodados.ibge.gov.br/api/v1/localidades/estados/MA/municipios';
+  const response=await fetch(url);
+  if(!response.ok)throw new Error('IBGE HTTP '+response.status);
+  const cities=await response.json();
+  monitorCity.innerHTML='<option value="">Selecione um município</option>';
+  monitorNames.clear();
+  cities.sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')).forEach(city=>{
+   const stateName=city.microrregiao?.mesorregiao?.UF?.sigla||city['regiao-imediata']?.['regiao-intermediaria']?.UF?.sigla||(state==='ALL'?'':'MA');
+   const opt=document.createElement('option');opt.value=city.nome;opt.textContent=state==='ALL'&&stateName?city.nome+' - '+stateName:city.nome;
+   opt.dataset.state=stateName||'MA';monitorCity.appendChild(opt);monitorNames.set(city.nome,{name:city.nome,state:stateName||'MA'});
+  });
+  const remembered=localStorage.getItem('eco-monitor-city');
+  if(remembered&&monitorNames.has(remembered))monitorCity.value=remembered;
+  updateMonitorSummary();
+  monitorMessage.textContent=cities.length+' municípios carregados da API do IBGE.';
+ }catch(error){
+  monitorCity.innerHTML='<option value="">Não foi possível carregar</option>';
+  monitorMessage.textContent='Não foi possível carregar os municípios. Confira a conexão e recarregue a página.';
+  console.error('Falha ao carregar municípios do IBGE:',error);
+ }
+}
+function updateMonitorSummary(){
+ const name=monitorCity.value;
+ const item=monitorNames.get(name);
+ const summary=document.getElementById('selected-city-summary');
+ const badge=document.getElementById('selected-city-state');
+ if(!name||!item){summary.textContent='Escolha um município para preparar a consulta.';badge.textContent=monitorState.value==='ALL'?'Brasil':'Maranhão';return}
+ summary.innerHTML='<strong>'+escapeHtml(item.name)+'</strong> — '+escapeHtml(item.state)+'. A consulta do INPE será aberta com este município como termo de busca.';
+ badge.textContent=item.state;
+}
+monitorCity.addEventListener('change',updateMonitorSummary);
+monitorState.addEventListener('change',loadMonitorMunicipalities);
+document.getElementById('save-monitor-city').addEventListener('click',()=>{
+ if(!monitorCity.value){monitorMessage.textContent='Selecione um município primeiro.';return}
+ localStorage.setItem('eco-monitor-city',monitorCity.value);
+ const selected=monitorNames.get(monitorCity.value);
+ localStorage.setItem('eco-monitor-state',selected?.state||'MA');
+ monitorMessage.textContent='Município do painel definido para '+monitorCity.value+'. Os relatórios locais podem usar essa seleção como referência.';
+ updateMonitorSummary();
+});
+document.getElementById('open-inpe-query').addEventListener('click',()=>{
+ const city=monitorCity.value;
+ if(!city){monitorMessage.textContent='Selecione um município antes de abrir a consulta.';return}
+ const state=monitorNames.get(city)?.state||'MA';
+ const start=document.getElementById('monitor-start').value;
+ const end=document.getElementById('monitor-end').value;
+ const query='site:inpe.br/queimadas/bdqueimadas '+city+' '+state+' focos de calor '+(start?'de '+start:'')+' '+(end?'até '+end:'');
+ window.open('https://www.google.com/search?q='+encodeURIComponent(query),'_blank','noopener');
+ window.open('https://www.inpe.br/queimadas/bdqueimadas/','_blank','noopener');
+ monitorMessage.textContent='Consulta preparada para '+city+' - '+state+'. No BDQueimadas, confirme o estado, o município, o período e o satélite antes de exportar os dados.';
+});
+loadMonitorMunicipalities();
+\nfunction initMap(id){if(maps[id]||!document.getElementById(id)||!window.L)return;try{const map=L.map(id,{scrollWheelZoom:false}).setView([-5.1,-42.8],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);maps[id]=map;setTimeout(()=>{map.invalidateSize();renderMap()},150)}catch(err){console.error('Falha ao iniciar mapa '+id,err);const el=document.getElementById(id);if(el)el.innerHTML='<div class="map-fallback">Não foi possível carregar o mapa. Confira sua conexão e atualize a página.</div>'}}
 function distanceKm(a,b){const rad=n=>n*Math.PI/180,R=6371,dLat=rad(b[0]-a[0]),dLon=rad(b[1]-a[1]),x=Math.sin(dLat/2)**2+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
 function locateUser(){const msg=document.getElementById('map-message');if(!navigator.geolocation){if(msg)msg.textContent='Este navegador não oferece serviço de localização.';return}if(msg)msg.textContent='Aguardando sua permissão para acessar a localização…';navigator.geolocation.getCurrentPosition(pos=>{userPosition=[pos.coords.latitude,pos.coords.longitude];initMap('full-map');const map=maps['full-map'];if(map){map.setView(userPosition,14);if(map._userMarker)map.removeLayer(map._userMarker);map._userMarker=L.circleMarker(userPosition,{radius:9,color:'#fff',weight:3,fillColor:'#087f5b',fillOpacity:1}).addTo(map).bindPopup('Você está aqui').openPopup();map.invalidateSize()}renderMap();},err=>{const messages={1:'Permissão negada. Autorize a localização nas configurações do navegador e tente novamente.',2:'Não foi possível determinar sua localização. Verifique o GPS ou a conexão.',3:'A solicitação demorou demais. Tente novamente.'};if(msg)msg.textContent=messages[err.code]||'Não foi possível obter sua localização.';},{enableHighAccuracy:true,timeout:15000,maximumAge:60000})}
 function renderMap(){
