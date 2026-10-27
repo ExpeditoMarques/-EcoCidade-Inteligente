@@ -102,6 +102,16 @@
 <section class="view" id="view-mapa">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Veja o que acontece ao seu redor</div><h2 style="font-size:25px;margin-top:5px">Mapa ambiental</h2><p>Encontre relatos próximos com sua permissão.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" id="locate-me">📍 Usar minha localização</button><button class="secondary" id="refresh-map">↻ Atualizar</button></div></div>
   <div class="notice">O mapa usa OpenStreetMap. Os relatos compartilhados aparecem para todos; os marcadores exigem que o relato tenha latitude e longitude.</div><section class="panel"><div class="mapmock" style="height:470px"><div id="full-map"></div></div><div class="legend"><span><i class="legend-dot" style="background:#df9a27"></i>Pendente</span><span><i class="legend-dot" style="background:#1685e8"></i>Em andamento</span><span><i class="legend-dot" style="background:#087f5b"></i>Resolvida</span></div><p id="map-message" class="muted">Toque em “Usar minha localização” para centralizar o mapa e procurar ocorrências num raio de 10 km.</p><div id="nearby-list" class="issue-list"></div></section>
+  <section class="panel" style="margin-top:16px">
+    <div class="panel-head"><div><h2>🔥 Monitoramento de queimadas — INPE</h2><p class="muted">Consulte os focos de calor detectados por satélite nas fontes oficiais.</p></div><span class="tag red">Dados externos</span></div>
+    <div class="notice">Os focos de calor são detecções por satélite e não significam, isoladamente, incêndio confirmado. O mapa oficial do INPE permite filtrar por estado, município, período e satélite.</div>
+    <div class="quick-grid" style="margin-top:12px">
+      <a class="quick" href="https://data.inpe.br/queimadas/bdqueimadas/" target="_blank" rel="noopener" style="text-decoration:none"><span class="quick-icon">🗺️</span><span><b>Abrir mapa de focos</b><small>BDQueimadas — filtros e coordenadas</small></span></a>
+      <a class="quick" href="https://data.inpe.br/queimadas/situacao_atual/" target="_blank" rel="noopener" style="text-decoration:none"><span class="quick-icon">📊</span><span><b>Situação atual</b><small>Estatísticas por estado e município</small></span></a>
+      <a class="quick" href="https://terrabrasilis.dpi.inpe.br/queimadas/portal/pages/secao_downloads/dados-abertos/" target="_blank" rel="noopener" style="text-decoration:none"><span class="quick-icon">⬇️</span><span><b>Baixar dados oficiais</b><small>Arquivos CSV e KML do INPE</small></span></a>
+    </div>
+    <p class="muted" style="margin-top:12px">O portal do INPE abre em outra aba. Para consultar um município, selecione o estado e o município nos filtros do BDQueimadas.</p>
+  </section>
 </section>
 <section class="view" id="view-guia">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Aprenda e compartilhe</div><h2 style="font-size:25px;margin-top:5px">Guia sustentável</h2><p>Pequenas escolhas que ajudam a construir um futuro melhor.</p></div></div>
