@@ -7,14 +7,32 @@ service cloud.firestore {
         && request.auth.token.email == 'expeditomar28@gmail.com'
         && request.auth.token.email_verified == true;
     }
+    function hasMunicipalAssignment(uid) {
+      return exists(/databases/$(database)/documents/adminAssignments/$(uid));
+    }
+    function isMunicipalAdmin() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && hasMunicipalAssignment(request.auth.uid)
+        && get(/databases/$(database)/documents/adminAssignments/$(request.auth.uid)).data.role == 'municipal_admin'
+        && get(/databases/$(database)/documents/adminAssignments/$(request.auth.uid)).data.emailLower == request.auth.token.email;
+    }
+    function assignedMunicipalityId() {
+      return get(/databases/$(database)/documents/adminAssignments/$(request.auth.uid)).data.municipioId;
+    }
+    function canManageOccurrence(data) {
+      return isAdmin() || (isMunicipalAdmin() && data.municipioId == assignedMunicipalityId());
+    }
 
     match /ocorrencias/{ocorrenciaId} {
-      allow read: if true;
+      // Ocorrências são privadas por padrão: administrador geral vê todas,
+      // administrador municipal vê apenas documentos do município atribuído.
+      allow read: if isAdmin() || (isMunicipalAdmin() && resource.data.municipioId == assignedMunicipalityId());
       allow create: if request.resource.data.keys().hasAll([
-          'categoria', 'local', 'descricao', 'latitude', 'longitude', 'status', 'criadoEm'
+          'categoria', 'local', 'descricao', 'latitude', 'longitude', 'status', 'criadoEm', 'municipioId', 'municipio'
         ])
         && request.resource.data.keys().hasOnly([
-          'categoria', 'local', 'descricao', 'latitude', 'longitude', 'status', 'criadoEm', 'ownerUid'
+          'categoria', 'local', 'descricao', 'latitude', 'longitude', 'status', 'criadoEm', 'ownerUid', 'municipioId', 'municipio'
         ])
         && request.resource.data.categoria is string
         && request.resource.data.categoria.size() > 0
@@ -24,15 +42,33 @@ service cloud.firestore {
         && request.resource.data.descricao is string
         && request.resource.data.descricao.size() > 0
         && request.resource.data.descricao.size() <= 1000
+        && request.resource.data.municipioId is string
+        && request.resource.data.municipioId.size() > 0
+        && request.resource.data.municipio is string
+        && request.resource.data.municipio.size() <= 120
+        && exists(/databases/$(database)/documents/municipios/$(request.resource.data.municipioId))
         && request.resource.data.status == 'Pendente'
         && request.resource.data.criadoEm == request.time
         && (request.resource.data.latitude == null || request.resource.data.latitude is number)
         && (request.resource.data.longitude == null || request.resource.data.longitude is number)
         && (!('ownerUid' in request.resource.data.keys()) || (signedIn() && request.resource.data.ownerUid == request.auth.uid));
-      allow update, delete: if isAdmin();
+      allow update: if canManageOccurrence(resource.data)
+        && request.resource.data.municipioId == resource.data.municipioId;
+      allow delete: if canManageOccurrence(resource.data);
     }
 
-    // Conteúdo e ferramentas do painel administrativo: somente conta autorizada.
+    match /adminAssignments/{uid} {
+      // O usuário pode consultar apenas sua própria atribuição; só o admin geral altera permissões.
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasAll(['role','emailLower','email','municipioId','municipioNome','uf','atualizadoEm','atualizadoPor'])
+        && request.resource.data.role == 'municipal_admin'
+        && request.resource.data.emailLower is string
+        && request.resource.data.municipioId is string
+        && exists(/databases/$(database)/documents/municipios/$(request.resource.data.municipioId));
+      allow delete: if isAdmin();
+    }
+
     match /conteudoSite/{docId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
@@ -60,11 +96,9 @@ service cloud.firestore {
         && request.resource.data.email is string && request.resource.data.email.size() <= 254;
       allow delete: if isAdmin();
     }
-    // Lista de municípios gerida pelo painel administrativo geral.
     match /municipios/{municipioId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
-
   }
 }
