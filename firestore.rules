@@ -25,9 +25,9 @@ service cloud.firestore {
     }
 
     match /ocorrencias/{ocorrenciaId} {
-      // Ocorrências são privadas por padrão: administrador geral vê todas,
-      // administrador municipal vê apenas documentos do município atribuído.
-      allow read: if isAdmin() || (isMunicipalAdmin() && resource.data.municipioId == assignedMunicipalityId());
+      // A consulta pública permite que visitantes vejam ocorrências de todos os municípios,
+      // inclusive pendentes. Edição e exclusão continuam limitadas por município.
+      allow read: if true;
       allow create: if request.resource.data.keys().hasAll([
           'categoria', 'local', 'descricao', 'latitude', 'longitude', 'status', 'criadoEm', 'municipioId', 'municipio'
         ])
