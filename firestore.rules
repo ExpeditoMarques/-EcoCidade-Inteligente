@@ -57,15 +57,50 @@ service cloud.firestore {
       allow delete: if canManageOccurrence(resource.data);
     }
 
-    match /adminAssignments/{uid} {
-      // O usuário pode consultar apenas sua própria atribuição; só o admin geral altera permissões.
-      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
-      allow create, update: if isAdmin()
-        && request.resource.data.keys().hasAll(['role','emailLower','email','municipioId','municipioNome','uf','atualizadoEm','atualizadoPor'])
+    function validInvite(token) {
+      return token is string
+        && exists(/databases/$(database)/documents/adminInvites/$(token))
+        && get(/databases/$(database)/documents/adminInvites/$(token)).data.used == false
+        && get(/databases/$(database)/documents/adminInvites/$(token)).data.role == 'municipal_admin'
+        && get(/databases/$(database)/documents/adminInvites/$(token)).data.expiresAt > request.time
+        && (get(/databases/$(database)/documents/adminInvites/$(token)).data.invitedEmail == ''
+            || get(/databases/$(database)/documents/adminInvites/$(token)).data.invitedEmail == request.auth.token.email);
+    }
+
+    match /adminInvites/{token} {
+      // O token aleatório funciona como segredo do convite. Só o admin geral cria convites.
+      allow read: if isAdmin() || (signedIn() && resource.data.used == false);
+      allow create: if isAdmin()
+        && request.resource.data.token == token
         && request.resource.data.role == 'municipal_admin'
-        && request.resource.data.emailLower is string
         && request.resource.data.municipioId is string
+        && request.resource.data.used == false
+        && request.resource.data.expiresAt > request.time
         && exists(/databases/$(database)/documents/municipios/$(request.resource.data.municipioId));
+      allow update: if signedIn()
+        && resource.data.used == false
+        && resource.data.expiresAt > request.time
+        && request.resource.data.token == token
+        && request.resource.data.used == true
+        && request.resource.data.usedBy == request.auth.uid
+        && request.resource.data.usedByEmail == request.auth.token.email
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used','usedBy','usedByEmail','usedAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /adminAssignments/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if isAdmin()
+        || (signedIn()
+          && request.auth.uid == uid
+          && request.auth.token.email_verified == true
+          && request.resource.data.role == 'municipal_admin'
+          && request.resource.data.emailLower == request.auth.token.email
+          && validInvite(request.resource.data.inviteToken)
+          && request.resource.data.municipioId == get(/databases/$(database)/documents/adminInvites/$(request.resource.data.inviteToken)).data.municipioId
+          && getAfter(/databases/$(database)/documents/adminInvites/$(request.resource.data.inviteToken)).data.used == true
+          && getAfter(/databases/$(database)/documents/adminInvites/$(request.resource.data.inviteToken)).data.usedBy == request.auth.uid);
+      allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
