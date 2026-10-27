@@ -90,7 +90,7 @@
     <button data-view="acoes"><span class="ico">♧</span>Ações comunitárias</button>
     <button data-view="conquistas"><span class="ico">★</span>Pontos e conquistas</button>
     <button data-view="perfil"><span class="ico">◉</span>Meu perfil</button>
-    <button data-view="admin" id="admin-nav" hidden><span class="ico">⚙</span>Administração</button>
+    <button type="button" id="admin-nav" onclick="window.location.href=\'./admin.html\'"><span class="ico">⚙</span>Painel administrativo</button>
   </nav></div>
   <div class="side-note"><div style="font-size:25px">🌱</div><b>Pequenas atitudes, grandes mudanças!</b><p>Uma cidade mais limpa começa com a participação de todos.</p></div>
 </aside>
@@ -273,7 +273,7 @@ function updateAuthUI(user,admin=false){
  authUser=user||null;isAdmin=!!admin;
  authSubmit.textContent=authUser?(isAdmin?'Administrador conectado':'Conta conectada — sem acesso administrativo'):'Entrar como administrador';authSubmit.disabled=!!authUser;authSignout.hidden=!authUser;document.getElementById('admin-login-panel').hidden=!!isAdmin;document.getElementById('admin-notice').textContent=isAdmin?'Acesso administrativo autorizado.':'Entre com a conta administrativa autorizada abaixo.';
  document.getElementById('auth-email').disabled=!!authUser;document.getElementById('auth-password').disabled=!!authUser;
- const adminNav=document.getElementById('admin-nav');if(adminNav)adminNav.hidden=!isAdmin;
+ // O painel administrativo agora é uma página separada (admin.html).
  if(!isAdmin&&document.getElementById('view-admin')?.classList.contains('active'))go('inicio');
  if(authUser)authStatus('Conta conectada: '+authUser.email+(isAdmin?' · acesso administrativo.':'.'));
 }
