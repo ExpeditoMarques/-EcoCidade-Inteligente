@@ -83,7 +83,7 @@
   <div class="brand"><div class="logo brand-mark" aria-label="Logo EcoCidade Inteligente" role="img"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="ecoBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25c66a"/><stop offset="1" stop-color="#087c91"/></linearGradient><linearGradient id="ecoLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d5ff8d"/><stop offset="1" stop-color="#20b65a"/></linearGradient></defs><circle cx="32" cy="32" r="31" fill="url(#ecoBg)"/><circle cx="32" cy="32" r="27" fill="none" stroke="#ffffff" stroke-opacity=".25"/><circle cx="44" cy="15" r="5" fill="#ffe875"/><path d="M12 43h40v8H12z" fill="#b7f4ed"/><path d="M16 34h8v9h-8zm11-8h9v17h-9zm12 4h8v13h-8z" fill="#e8fbff"/><path d="M14 27C15 14 29 8 39 10 36 23 27 32 14 27Z" fill="url(#ecoLeaf)"/><path d="M14 27c8-2 15-7 22-14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/><path d="M20 39c-1-10 7-17 17-18 1 10-6 18-17 18Z" fill="#48df82"/><path d="M21 38l12-13" stroke="#eaffd5" stroke-width="2" stroke-linecap="round"/><path d="M10 53c9-4 15-2 22 0s13 2 22-1" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2" stroke-linecap="round"/></svg></div><div><strong>EcoCidade<br><span class="brand-intel">Inteligente</span></strong><small>Tecnologia que cuida do planeta</small></div></div>
   <div><div class="navlabel">Menu principal</div><nav class="nav" aria-label="Menu principal">
     <button class="active" data-view="inicio"><span class="ico">⌂</span>Início</button>
-    <button data-view="mapa"><span class="ico">⌖</span>Mapa ambiental</button>\n    <button data-view="monitoramento"><span class="ico">🔥</span>Queimadas</button>
+    <button data-view="mapa"><span class="ico">⌖</span>Mapa ambiental</button>
     <button data-view="registrar"><span class="ico">⊕</span>Registrar ocorrência</button>
     <button data-view="ocorrencias"><span class="ico">▤</span>Ocorrências</button>
     <button data-view="guia"><span class="ico">♧</span>Guia sustentável</button>
@@ -97,21 +97,7 @@
 <div class="main">
 <header class="topbar"><div class="crumb">EcoCidade / <b id="crumb-title">Início</b></div><div class="top-actions"><input class="search" id="search-all" placeholder="⌕  Buscar no sistema..." aria-label="Buscar"><button class="install-app" id="install-app" type="button" hidden>＋ Instalar app</button><button class="secondary" id="notifications-button" type="button" aria-label="Ativar notificações">🔔 Avisos</button><div class="status"><span class="dot"></span> Comunidade sustentável</div><div class="avatar">E</div></div></header>
 <main class="content">
-<section class="view" id="view-monitoramento">
-  <div class="section-title"><div><h2>Monitoramento de queimadas</h2><p>Selecione o município para consultar as fontes oficiais e organizar o painel local.</p></div></div>
-  <div class="panel">
-    <div class="form-grid">
-      <div class="field"><label for="monitor-state">Estado</label><select id="monitor-state"><option value="MA" selected>Maranhão (MA)</option><option value="ALL">Todos os estados</option></select></div>
-      <div class="field"><label for="monitor-city">Município</label><select id="monitor-city"><option value="">Carregando municípios…</option></select></div>
-      <div class="field"><label for="monitor-start">Data inicial</label><input id="monitor-start" type="date"></div>
-      <div class="field"><label for="monitor-end">Data final</label><input id="monitor-end" type="date"></div>
-    </div>
-    <div class="notice" style="margin-top:16px">Os focos de calor são detecções por satélite e não confirmam, isoladamente, um incêndio. Esta primeira etapa abre a consulta oficial do INPE com o município selecionado; os dados do painel local são os relatos enviados ao EcoCidade, não uma contagem automática de focos do INPE.</div>
-    <div class="accessibility-controls"><button class="primary" id="open-inpe-query" type="button">Consultar no INPE ↗</button><button class="secondary" id="save-monitor-city" type="button">Definir município do painel</button></div>
-    <p class="muted" id="monitor-message" role="status" style="margin-top:12px">Carregando a lista oficial de municípios do IBGE…</p>
-    <div class="panel" style="margin-top:16px;background:#f8fcf9;box-shadow:none"><div class="panel-head"><h2>Município selecionado</h2><span class="tag green" id="selected-city-state">Maranhão</span></div><div id="selected-city-summary">Escolha um município para preparar a consulta.</div><p class="muted">Fontes: <a href="https://www.inpe.br/queimadas/bdqueimadas/" target="_blank" rel="noopener">BDQueimadas / INPE</a> · <a href="https://servicodados.ibge.gov.br/api/v1/localidades/estados/MA/municipios" target="_blank" rel="noopener">Lista de municípios / IBGE</a></p></div>
-  </div>
-</section>
+
 <section class="view active" id="view-inicio">
   <div class="hero"><div class="hero-copy"><div class="eyebrow">🌎 Nosso futuro começa agora</div><h1>Juntos por uma cidade mais verde e sustentável!</h1><p>Registre problemas ambientais, acompanhe os relatos da comunidade e participe de ações que fazem a diferença.</p><button class="primary" data-go="registrar">＋ Registrar ocorrência <span>→</span></button></div></div>
   <div class="stats">
@@ -158,7 +144,22 @@
 </section>
 <section class="view" id="view-mapa">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Veja o que acontece ao seu redor</div><h2 style="font-size:25px;margin-top:5px">Mapa ambiental</h2><p>Mapa de ocorrências e painel de monitoramento ambiental.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" id="locate-me">📍 Usar minha localização</button><button class="secondary" id="refresh-map">↻ Atualizar</button></div></div>
-  <div class="notice">O mapa abaixo mostra relatos comunitários com coordenadas. Os painéis de queimadas, ar e água reúnem fontes oficiais e abrem em outra aba; seus dados ainda não são desenhados automaticamente como camadas neste mapa.</div>
+  <div class="notice">O mapa principal apresenta relatos comunitários. Logo abaixo, você encontra no mesmo painel o monitoramento de queimadas por município, qualidade do ar e recursos hídricos. Os portais oficiais são fontes externas; as medições ainda não são importadas automaticamente para as camadas do mapa.</div>
+<section class="panel" id="integrated-fire-monitor" style="margin:0 0 16px">
+  <div class="panel-head"><div><h2>🔥 Monitoramento de queimadas por município</h2><p class="muted">Escolha o município e o período para preparar a consulta oficial do INPE.</p></div><span class="tag red">Fonte: INPE</span></div>
+  <div class="panel">
+    <div class="form-grid">
+      <div class="field"><label for="monitor-state">Estado</label><select id="monitor-state"><option value="MA" selected>Maranhão (MA)</option><option value="ALL">Todos os estados</option></select></div>
+      <div class="field"><label for="monitor-city">Município</label><select id="monitor-city"><option value="">Carregando municípios…</option></select></div>
+      <div class="field"><label for="monitor-start">Data inicial</label><input id="monitor-start" type="date"></div>
+      <div class="field"><label for="monitor-end">Data final</label><input id="monitor-end" type="date"></div>
+    </div>
+    <div class="notice" style="margin-top:16px">Os focos de calor são detecções por satélite e não confirmam, isoladamente, um incêndio. Esta primeira etapa abre a consulta oficial do INPE com o município selecionado; os dados do painel local são os relatos enviados ao EcoCidade, não uma contagem automática de focos do INPE.</div>
+    <div class="accessibility-controls"><button class="primary" id="open-inpe-query" type="button">Consultar no INPE ↗</button><button class="secondary" id="save-monitor-city" type="button">Definir município do painel</button></div>
+    <p class="muted" id="monitor-message" role="status" style="margin-top:12px">Carregando a lista oficial de municípios do IBGE…</p>
+    <div class="panel" style="margin-top:16px;background:#f8fcf9;box-shadow:none"><div class="panel-head"><h2>Município selecionado</h2><span class="tag green" id="selected-city-state">Maranhão</span></div><div id="selected-city-summary">Escolha um município para preparar a consulta.</div><p class="muted">Fontes: <a href="https://www.inpe.br/queimadas/bdqueimadas/" target="_blank" rel="noopener">BDQueimadas / INPE</a> · <a href="https://servicodados.ibge.gov.br/api/v1/localidades/estados/MA/municipios" target="_blank" rel="noopener">Lista de municípios / IBGE</a></p></div>
+  </div>
+</section>
   <section class="panel"><div class="mapmock" style="height:470px"><div id="full-map"></div></div><div class="legend"><span><i class="legend-dot" style="background:#df9a27"></i>Pendente</span><span><i class="legend-dot" style="background:#1685e8"></i>Em andamento</span><span><i class="legend-dot" style="background:#087f5b"></i>Resolvida</span></div><p id="map-message" class="muted">Toque em “Usar minha localização” para centralizar o mapa e procurar ocorrências num raio de 10 km.</p><div id="nearby-list" class="issue-list"></div></section>
   <div class="section-title"><div><div class="eyebrow">Monitoramento integrado</div><h2>Indicadores ambientais</h2><p>Consulte queimadas, qualidade do ar e recursos hídricos no mesmo lugar.</p></div></div>
   <section class="panel" id="sema-live-panel" style="margin-bottom:16px">
