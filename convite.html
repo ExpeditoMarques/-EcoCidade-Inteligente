@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#063d32"><title>Aceitar convite | EcoCidade Inteligente</title>
+<style>
+:root{--deep:#063d32;--green:#087b55;--lime:#b9f36a;--paper:#f0f6f2;--ink:#173e34;--muted:#6b8379;--line:#dce9e1}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(140deg,#eaf5ed,#f7fbf8);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}main{width:min(100%,520px);background:white;border:1px solid var(--line);border-radius:22px;padding:clamp(20px,5vw,34px);box-shadow:0 20px 60px #113b2c12}.logo{width:54px;height:54px;display:grid;place-items:center;background:linear-gradient(145deg,#c2f477,#2bc77a);border-radius:16px;font-size:28px}h1{margin:16px 0 5px;font-size:27px}p{color:var(--muted)}.notice{padding:12px 14px;border-radius:12px;background:#e9f7ed;border:1px solid #cce8d4;font-size:13px}.notice.error{background:#fff0ef;border-color:#f0d0cc;color:#9d2b22}.field{display:grid;gap:6px;margin:14px 0}.field label{font-size:13px;font-weight:750}.field input{width:100%;padding:12px;border:1px solid #d5e4dc;border-radius:10px;font:inherit}.btn{width:100%;border:0;border-radius:11px;padding:13px;margin-top:8px;font:inherit;font-weight:800;cursor:pointer}.primary{background:var(--lime);color:var(--deep)}.secondary{background:#fff;border:1px solid var(--line);color:var(--ink)}.hidden{display:none!important}.small{font-size:12px}
+</style></head><body><main><div class="logo">🌿</div><h1>Aceitar convite</h1><p>EcoCidade Inteligente · Administração municipal</p>
+<div id="invite-info" class="notice">Verificando o convite…</div>
+<form id="account-form" class="hidden">
+ <div class="field"><label for="name">Nome completo</label><input id="name" required maxlength="80" autocomplete="name"></div>
+ <div class="field"><label for="email">E-mail</label><input id="email" type="email" required maxlength="254" autocomplete="email"></div>
+ <div class="field"><label for="password">Criar senha (mínimo 6 caracteres)</label><input id="password" type="password" required minlength="6" autocomplete="new-password"></div>
+ <button class="btn primary" type="submit">Criar conta e verificar e-mail</button>
+</form>
+<div id="existing-form" class="hidden">
+ <div class="field"><label for="login-email">E-mail da conta</label><input id="login-email" type="email" autocomplete="username"></div>
+ <div class="field"><label for="login-password">Senha</label><input id="login-password" type="password" autocomplete="current-password"></div>
+ <button id="login-button" class="btn secondary" type="button">Entrar com conta existente</button>
+</div>
+<button id="verify-button" class="btn primary hidden" type="button">Confirmar e ativar acesso municipal</button>
+<p id="status" class="small" role="status"></p>
+<p class="small">Por segurança, o convite é de uso único, expira em 48 horas e só concede acesso ao município indicado. O e-mail precisa estar verificado.</p>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+'use strict';
+const firebaseConfig={apiKey:"AIzaSyDj1fO_h4KsbL9wz2qtH7PRdDClzGc8hKw",authDomain:"ecocidade-inteligente.firebaseapp.com",projectId:"ecocidade-inteligente",storageBucket:"ecocidade-inteligente.firebasestorage.app",messagingSenderId:"882034469996",appId:"1:882034469996:web:112364d77c247fa329bc49",measurementId:"G-KXQZCP657Y"};
+const $=id=>document.getElementById(id),token=new URLSearchParams(location.search).get('token');let auth,db,invite=null;
+function say(t,error=false){$('status').textContent=t;$('status').style.color=error?'#b42318':''}
+function info(t,error=false){$('invite-info').textContent=t;$('invite-info').classList.toggle('error',error)}
+function show(el,on=true){$(el).classList.toggle('hidden',!on)}
+async function loadInvite(){if(!token||!/^[a-f0-9]{64}$/.test(token)){info('Este link de convite é inválido ou está incompleto.',true);return}
+ try{const snap=await db.collection('adminInvites').doc(token).get();if(!snap.exists){info('Convite não encontrado.',true);return}invite=snap.data();if(invite.used){info('Este convite já foi utilizado.',true);return}if(!invite.expiresAt||invite.expiresAt.toDate()<=new Date()){info('Este convite expirou. Peça ao administrador geral um novo link.',true);return}
+ info('Convite para administrar '+(invite.municipioNome||'o município autorizado')+(invite.uf?' - '+invite.uf:'')+'.'+(invite.invitedEmail?' E-mail autorizado: '+invite.invitedEmail+'.':''));
+ show('account-form');show('existing-form');
+ if(auth.currentUser){await auth.currentUser.reload();if(auth.currentUser.emailVerified)show('verify-button');}
+ }catch(e){console.error(e);info('Não foi possível validar o convite. Verifique a conexão e as regras do Firebase.',true)}}
+$('account-form').addEventListener('submit',async e=>{e.preventDefault();const name=$('name').value.trim(),email=$('email').value.trim().toLowerCase(),password=$('password').value;if(invite?.invitedEmail&&email!==invite.invitedEmail){say('Este convite foi criado para outro e-mail.',true);return}
+ try{const cred=await auth.createUserWithEmailAndPassword(email,password);await cred.user.updateProfile({displayName:name});await cred.user.sendEmailVerification({url:location.href});say('Conta criada. Abra o e-mail de verificação enviado pelo Firebase. Depois, volte a este link e clique em “Confirmar e ativar acesso municipal”.');show('verify-button',false)}catch(e){console.error(e);say(e.code==='auth/email-already-in-use'?'Este e-mail já tem uma conta. Use “Entrar com conta existente”.':'Não foi possível criar a conta: '+(e.message||e.code),true)}});
+$('login-button').addEventListener('click',async()=>{const email=$('login-email').value.trim().toLowerCase(),password=$('login-password').value;if(!email||!password){say('Informe o e-mail e a senha.',true);return}if(invite?.invitedEmail&&email!==invite.invitedEmail){say('Este convite foi criado para outro e-mail.',true);return}
+ try{await auth.signInWithEmailAndPassword(email,password);await auth.currentUser.reload();if(auth.currentUser.emailVerified){say('Conta verificada. Você já pode confirmar o convite.');show('verify-button')}else{await auth.currentUser.sendEmailVerification({url:location.href});say('Seu e-mail ainda não está verificado. Enviamos outro link de verificação. Depois, volte aqui.')}}catch(e){console.error(e);say('Não foi possível entrar. Confira e-mail e senha.',true)}});
+$('verify-button').addEventListener('click',async()=>{try{let user=auth.currentUser;if(!user){say('Entre com a conta que usará este convite.',true);show('existing-form');return}await user.reload();user=auth.currentUser;if(!user.emailVerified){say('Verifique seu e-mail antes de ativar o acesso.',true);return}if(invite?.invitedEmail&&user.email.toLowerCase()!==invite.invitedEmail){say('O e-mail da conta não corresponde ao convite.',true);return}
+ const batch=db.batch(),inviteRef=db.collection('adminInvites').doc(token),assignmentRef=db.collection('adminAssignments').doc(user.uid);
+ batch.set(assignmentRef,{role:'municipal_admin',emailLower:user.email.toLowerCase(),email:user.email,municipioId:invite.municipioId,municipioNome:invite.municipioNome||'',uf:invite.uf||'',inviteToken:token,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),atualizadoPor:'convite:'+token});
+ batch.update(inviteRef,{used:true,usedBy:user.uid,usedByEmail:user.email,usedAt:firebase.firestore.FieldValue.serverTimestamp()});
+ await batch.commit();info('Acesso municipal ativado com sucesso.');say('Agora entre no painel administrativo usando este mesmo e-mail verificado.');show('verify-button',false);show('account-form',false);show('existing-form',false)
+ }catch(e){console.error(e);say('Não foi possível ativar. O convite pode ter sido usado, expirado ou as regras do Firestore ainda não foram publicadas. Detalhe: '+(e.code||e.message),true)}});
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();loadInvite();
+</script></body></html>
