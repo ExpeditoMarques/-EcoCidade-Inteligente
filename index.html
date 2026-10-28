@@ -239,6 +239,105 @@
   .content { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
 }
 
+
+/* Novo layout mobile/tablet inspirado na proposta visual EcoCidade */
+.mobile-brand{display:none}
+@media (min-width:601px) and (max-width:1024px){
+  .app{grid-template-columns:190px minmax(0,1fr)}
+  .sidebar{padding:20px 10px;gap:20px}
+  .brand{gap:8px;padding:0 2px}
+  .brand-mark{width:42px;height:42px;flex-basis:42px}
+  .brand strong{font-size:15px}
+  .brand small{font-size:9px}
+  .nav button{padding:10px 8px;font-size:12px}
+  .topbar{min-height:82px;padding:14px 18px}
+  .content{padding:18px 18px 32px}
+  .hero{min-height:280px;padding:26px}
+  .hero h1{font-size:clamp(28px,3.5vw,38px)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .columns{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .quick-panel{grid-column:1/-1}
+  .quick-panel .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .quick-panel .quick{flex-direction:column;text-align:center;align-items:center}
+  .quick-panel .quick small{display:block}
+  .quick-panel .quick b{font-size:11px}
+  .guide-grid,.actions-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .mobile-brand{display:flex;align-items:center;gap:9px;min-width:0;color:#fff}
+  .mobile-brand .brand-mark{width:42px;height:42px;flex:0 0 42px;border-radius:13px}
+  .mobile-brand strong{display:block;color:#fff;font-size:14px;line-height:1.05;letter-spacing:-.3px}
+  .mobile-brand .brand-intel{color:var(--lime)}
+  .mobile-brand small{display:block;margin-top:3px;color:#d6eee3;font-size:9px;white-space:nowrap}
+  .topbar{display:flex;justify-content:space-between;gap:8px;min-height:76px;padding:10px 13px}
+  .topbar>.crumb{display:none}
+  .top-actions{margin-left:auto;gap:7px}
+  #notifications-button{display:none}
+  .top-actions .avatar{display:none}
+  .install-app{display:inline-flex!important;align-items:center;justify-content:center;white-space:nowrap;padding:9px 10px;font-size:11px}
+  .hero{background-position:62% center}
+  .hero:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#032f29eF 0%,#064b3bd9 58%,#064d3b48 100%)}
+  .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .quick{min-height:94px;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;padding:13px;border-radius:17px}
+  .quick-icon{width:40px;height:40px;flex-basis:40px;border-radius:14px}
+  .quick b{font-size:12px}
+  .quick small{font-size:10px}
+  .quick-register{border-color:#ffdad5;background:linear-gradient(145deg,#fff,#fff5f3)}
+  .quick-map{border-color:#cfe9ff;background:linear-gradient(145deg,#fff,#f1f8ff)}
+  .quick-guide{border-color:#ccefd8;background:linear-gradient(145deg,#fff,#f0fff4)}
+  .quick-actions{border-color:#e4d7ff;background:linear-gradient(145deg,#fff,#f8f4ff)}
+  .quick-panel .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .quick-panel .quick{min-height:80px;flex-direction:row;align-items:center;text-align:left}
+  .stats{gap:9px}
+  .stat{border-radius:17px}
+  .section-title{margin-top:22px}
+}
+@media (max-width:600px){
+  .topbar{min-height:70px;padding:8px 10px}
+  .mobile-brand .brand-mark{width:38px;height:38px;flex-basis:38px;border-radius:12px}
+  .mobile-brand strong{font-size:12px}
+  .mobile-brand small{font-size:8px}
+  .install-app{padding:8px 9px;font-size:10px}
+  .content{padding:10px 10px calc(100px + env(safe-area-inset-bottom))}
+  .hero{min-height:260px;padding:19px;border-radius:20px}
+  .hero .eyebrow{font-size:9px;letter-spacing:1.3px}
+  .hero h1{max-width:340px;font-size:clamp(26px,7vw,32px);line-height:1.08}
+  .hero p{max-width:330px;font-size:12px;line-height:1.55}
+  .hero .primary{min-height:43px;border-radius:24px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+  .stat{padding:12px}
+  .stat-top{font-size:10px}
+  .stat-num{font-size:25px}
+  .stat-foot{font-size:9px}
+  .quick-grid{gap:9px}
+  .quick{min-height:105px;padding:12px;border-radius:16px}
+  .quick-icon{width:39px;height:39px;flex-basis:39px;font-size:20px}
+  .quick b{font-size:11px;line-height:1.3}
+  .quick small{font-size:9px;line-height:1.3}
+  .columns{margin-top:13px}
+  .panel{border-radius:17px}
+  .mapmock{height:245px}
+  .photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .photo{height:105px;border-radius:12px}
+  .photo span{font-size:9px;padding:20px 6px 7px}
+  .nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;overflow:visible!important}
+  .nav button{width:auto!important;min-width:0!important;max-width:none!important;flex:initial!important;min-height:55px;padding:5px 1px;font-size:9px}
+  .nav button:nth-child(4),.nav button:nth-child(6),.nav button:nth-child(7),.nav button:nth-child(9){display:none}
+  .nav .ico{font-size:19px}
+  .sidebar{padding:5px 5px calc(5px + env(safe-area-inset-bottom))}
+  .quick-panel .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .quick-panel .quick{min-height:78px;padding:9px;gap:7px}
+  .quick-panel .quick small{font-size:9px}
+}
+@media (max-width:360px){
+  .mobile-brand{gap:6px}
+  .mobile-brand .brand-mark{width:34px;height:34px;flex-basis:34px}
+  .mobile-brand strong{font-size:11px}
+  .install-app{padding:7px;font-size:9px}
+  .quick{padding:9px}
+  .quick b{font-size:10px}
+}
+
 </style>
 </head>
 <body>
@@ -259,7 +358,7 @@
   <div class="side-note"><div style="font-size:25px">🌱</div><b>Pequenas atitudes, grandes mudanças!</b><p>Uma cidade mais limpa começa com a participação de todos.</p></div>
 </aside>
 <div class="main">
-<header class="topbar"><div class="crumb">EcoCidade / <b id="crumb-title">Início</b></div><div class="top-actions"><input class="search" id="search-all" placeholder="⌕  Buscar no sistema..." aria-label="Buscar"><button class="install-app" id="install-app" type="button" hidden>＋ Instalar app</button><button class="secondary" id="notifications-button" type="button" aria-label="Ativar notificações">🔔 Avisos</button><div class="status"><span class="dot"></span> Comunidade sustentável</div><div class="avatar">E</div></div></header>
+<header class="topbar"><div class="mobile-brand" aria-label="EcoCidade Inteligente"><div id="mobile-brand-logo"></div><div><strong>EcoCidade <span class="brand-intel">Inteligente</span></strong><small>Tecnologia que cuida do planeta</small></div></div><div class="crumb">EcoCidade / <b id="crumb-title">Início</b></div><div class="top-actions"><input class="search" id="search-all" placeholder="⌕  Buscar no sistema..." aria-label="Buscar"><button class="install-app" id="install-app" type="button">＋ Instalar app</button><button class="secondary" id="notifications-button" type="button" aria-label="Ativar notificações">🔔 Avisos</button><div class="status"><span class="dot"></span> Comunidade sustentável</div><div class="avatar">E</div></div></header>
 <main class="content">
 
 <section class="view active" id="view-inicio">
@@ -790,7 +889,7 @@ if(installButton)installButton.addEventListener('click',async()=>{if(!installPro
 window.addEventListener('appinstalled',()=>{if(installButton)installButton.hidden=true});
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Modo offline indisponível',err)));
 
-try{initMap('mini-map');render();loadCloudReports();loadReportMunicipalities();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
+try{const sourceLogo=document.querySelector('.sidebar .brand-mark');const mobileLogo=document.getElementById('mobile-brand-logo');if(sourceLogo&&mobileLogo){const clone=sourceLogo.cloneNode(true);clone.classList.add('mobile-logo-mark');clone.removeAttribute('aria-label');clone.removeAttribute('role');mobileLogo.replaceChildren(clone)}initMap('mini-map');render();loadCloudReports();loadReportMunicipalities();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
 </script>
 </body></html>
 
