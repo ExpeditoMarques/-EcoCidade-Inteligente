@@ -104,6 +104,34 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+
+    match /conteudosPublicos/{contentId} {
+      // Visitantes só leem itens publicados; admins podem consultar o conteúdo que gerenciam.
+      allow read: if (resource.data.publicado == true) || isAdmin()
+        || (isMunicipalAdmin() && resource.data.municipioId == assignedMunicipalityId());
+      allow create: if isAdmin()
+        || (isMunicipalAdmin()
+          && request.resource.data.municipioId == assignedMunicipalityId()
+          && request.resource.data.secao in ['guia','acoes','conquistas','inicio']
+          && request.resource.data.titulo is string
+          && request.resource.data.titulo.size() > 0
+          && request.resource.data.titulo.size() <= 120
+          && request.resource.data.descricao is string
+          && request.resource.data.descricao.size() <= 1800);
+      allow update: if isAdmin()
+        || (isMunicipalAdmin()
+          && resource.data.municipioId == assignedMunicipalityId()
+          && request.resource.data.municipioId == assignedMunicipalityId()
+          && request.resource.data.secao in ['guia','acoes','conquistas','inicio']
+          && request.resource.data.titulo is string
+          && request.resource.data.titulo.size() > 0
+          && request.resource.data.titulo.size() <= 120
+          && request.resource.data.descricao is string
+          && request.resource.data.descricao.size() <= 1800);
+      allow delete: if isAdmin()
+        || (isMunicipalAdmin() && resource.data.municipioId == assignedMunicipalityId());
+    }
+
     match /conteudoSite/{docId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
