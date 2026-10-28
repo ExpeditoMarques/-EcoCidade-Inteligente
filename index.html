@@ -239,22 +239,6 @@
 <section class="view" id="view-registrar">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Faça sua parte</div><h2 style="font-size:25px;margin-top:5px">Registrar ocorrência</h2><p>Ajude a identificar problemas ambientais na sua região.</p></div></div>
   <div class="notice"><strong>Antes de enviar um relato, entre ou crie sua conta.</strong><br>Assim, suas ocorrências e pontos ficam associados ao seu perfil e podem ser consultados em outros dispositivos. Os registros não são enviados automaticamente a órgãos públicos.</div>
-  <section class="panel" style="margin-bottom:16px" aria-labelledby="visitor-account-title">
-    <div class="panel-head"><div><h2 id="visitor-account-title">👤 Conta da comunidade</h2><span class="muted">Crie sua conta ou entre para vincular seus relatos.</span></div></div>
-    <form id="profile-auth-form" class="form-grid">
-      <div class="field"><label for="visitor-name">Nome completo (para cadastro)</label><input id="visitor-name" maxlength="80" autocomplete="name" placeholder="Seu nome"></div>
-      <div class="field"><label for="visitor-city">Cidade ou comunidade (para cadastro)</label><input id="visitor-city" maxlength="100" placeholder="Sua cidade ou comunidade"></div>
-      <div class="field"><label for="visitor-email">E-mail</label><input id="visitor-email" type="email" autocomplete="email" required placeholder="voce@email.com"></div>
-      <div class="field"><label for="visitor-password">Senha (mínimo 8 caracteres)</label><input id="visitor-password" type="password" minlength="8" autocomplete="current-password" required placeholder="Sua senha"></div>
-      <div class="field full" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px">
-        <button class="primary" type="submit" id="visitor-register">Criar conta</button>
-        <button class="secondary" type="button" id="visitor-login">Entrar</button>
-        <button class="secondary" type="button" id="visitor-reset">Esqueci a senha</button>
-        <button class="secondary" type="button" id="visitor-logout" hidden>Sair da conta</button>
-      </div>
-      <p id="visitor-auth-message" class="muted field full" aria-live="polite">Crie sua conta e confirme o e-mail para registrar ocorrências vinculadas ao seu perfil.</p>
-    </form>
-  </section>
   <section class="panel"><form id="report-form" class="form-grid">
     <div class="field"><label for="report-municipality">Município da ocorrência *</label><select id="report-municipality" required><option value="">Carregando municípios…</option></select></div>
     <div class="field"><label for="category">Tipo de problema *</label><select id="category" required><option value="">Selecione uma categoria</option><option>Descarte irregular de lixo</option><option>Queimadas ou fumaça</option><option>Desperdício de água</option><option>Poluição de rio ou córrego</option><option>Esgoto ou saneamento</option><option>Falta de árvores ou área verde</option><option>Poluição do ar</option><option>Outro problema ambiental</option></select></div>
@@ -357,6 +341,22 @@
 </section>
 <section class="view" id="view-perfil">
   <div class="section-title" style="margin-top:0"><div><div class="eyebrow">Sua participação importa</div><h2 style="font-size:25px;margin-top:5px">Meu perfil</h2><p>Seu perfil fica associado à sua conta para você acessá-lo em outros dispositivos.</p></div></div>
+  <section class="panel" style="margin-bottom:16px" aria-labelledby="visitor-account-title">
+    <div class="panel-head"><div><h2 id="visitor-account-title">👤 Conta da comunidade</h2><span class="muted">Crie sua conta ou entre para vincular seus relatos.</span></div></div>
+    <form id="profile-auth-form" class="form-grid">
+      <div class="field"><label for="visitor-name">Nome completo (para cadastro)</label><input id="visitor-name" maxlength="80" autocomplete="name" placeholder="Seu nome"></div>
+      <div class="field"><label for="visitor-city">Cidade ou comunidade (para cadastro)</label><input id="visitor-city" maxlength="100" placeholder="Sua cidade ou comunidade"></div>
+      <div class="field"><label for="visitor-email">E-mail</label><input id="visitor-email" type="email" autocomplete="email" required placeholder="voce@email.com"></div>
+      <div class="field"><label for="visitor-password">Senha (mínimo 8 caracteres)</label><input id="visitor-password" type="password" minlength="8" autocomplete="current-password" required placeholder="Sua senha"></div>
+      <div class="field full" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px">
+        <button class="primary" type="submit" id="visitor-register">Criar conta</button>
+        <button class="secondary" type="button" id="visitor-login">Entrar</button>
+        <button class="secondary" type="button" id="visitor-reset">Esqueci a senha</button>
+        <button class="secondary" type="button" id="visitor-logout" hidden>Sair da conta</button>
+      </div>
+      <p id="visitor-auth-message" class="muted field full" aria-live="polite">Crie sua conta e confirme o e-mail para registrar ocorrências vinculadas ao seu perfil.</p>
+    </form>
+  </section>
   <section class="panel"><p class="muted">Informe seu nome e a cidade ou comunidade onde você mora. Entre com uma conta e confirme o e-mail para sincronizar seus dados.</p><form id="profile-form" class="form-grid"><div class="field"><label for="profile-name">Seu nome</label><input id="profile-name" maxlength="80" required placeholder="Como podemos chamar você?"></div><div class="field"><label for="profile-city">Cidade ou comunidade</label><input id="profile-city" maxlength="100" required placeholder="Sua cidade ou comunidade"></div><div class="field full"><button class="primary" type="submit" id="profile-save">Salvar perfil</button><span id="profile-message" class="muted" aria-live="polite">Entre com sua conta para salvar seu perfil na nuvem.</span></div></form></section>
 <section class="panel accessibility-panel" style="margin-top:16px"><h3>♿ Acessibilidade</h3><p class="muted">Personalize a leitura neste dispositivo.</p><div class="accessibility-controls"><button class="secondary" id="font-increase" type="button">Aumentar texto A+</button><button class="secondary" id="font-reset" type="button">Texto padrão</button><button class="secondary" id="contrast-toggle" type="button" aria-pressed="false">Alto contraste</button></div><p id="accessibility-message" class="muted" aria-live="polite">Preferências salvas neste navegador.</p></section>
 </section>
