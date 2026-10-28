@@ -668,11 +668,18 @@ function renderMap(){
   if(m._userMarker)m._userMarker.bringToFront();
  });
  const msg=document.getElementById('map-message'),list=document.getElementById('nearby-list');
+ const ordered=[...reports].sort((a,b)=>new Date(b.created||0)-new Date(a.created||0));
  if(msg){
-  if(!userPosition)msg.textContent=points.length?points.length+' ocorrência(s) compartilhada(s) com coordenadas. Autorize sua localização para filtrar as que estão a até 10 km.':'Ainda não há ocorrências com coordenadas para exibir. Os relatos sem latitude e longitude continuam visíveis na lista de ocorrências.';
-  else msg.textContent=nearby.length?nearby.length+' ocorrência(s) compartilhada(s) encontrada(s) em até 10 km.':'Nenhuma ocorrência compartilhada com coordenadas em até 10 km da sua localização.';
+  if(!ordered.length)msg.textContent='Ainda não há ocorrências registradas. Os relatos enviados aparecerão aqui assim que forem carregados.';
+  else if(!points.length)msg.textContent=ordered.length+' ocorrência(s) carregada(s). Nenhuma tem coordenadas; os relatos aparecem na lista abaixo, mas não podem receber um marcador exato no mapa até que a localização seja informada.';
+  else if(!userPosition)msg.textContent=points.length+' ocorrência(s) com localização no mapa. Autorize sua localização para ver a distância; os relatos sem coordenadas também aparecem na lista.';
+  else msg.textContent=nearby.length+' ocorrência(s) com coordenadas a até 10 km. A lista abaixo também inclui os demais relatos.';
  }
- if(list)list.innerHTML=userPosition&&nearby.length?[...nearby].sort((a,b)=>a.distance-b.distance).map(r=>'<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category)+'</b><small>'+escapeHtml(r.place||'Local não informado')+' · '+r.distance.toFixed(1)+' km</small></div><span class="tag '+(r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status)+'</span></div>').join(''):'';
+ if(list)list.innerHTML=ordered.length?ordered.map(r=>{
+  const hasCoords=r.lat!==null&&r.lat!==undefined&&r.lat!==''&&r.lng!==null&&r.lng!==undefined&&r.lng!=='';
+  const distance=hasCoords&&userPosition?distanceKm(userPosition,[Number(r.lat),Number(r.lng)]):null;
+  return '<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category||'Ocorrência ambiental')+'</b><small>'+escapeHtml(r.municipio||r.municipioNome||'Município não informado')+' · '+escapeHtml(r.place||'Local não informado')+(distance!==null?' · '+distance.toFixed(1)+' km':hasCoords?' · localização no mapa':' · sem coordenadas')+'</small></div><span class="tag '+(r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status||'Pendente')+'</span></div>';
+ }).join(''):'<div class="empty">Nenhuma ocorrência registrada ainda.</div>';
 }
 document.getElementById('refresh-map').addEventListener('click',()=>{initMap('full-map');renderMap();maps['full-map']?.invalidateSize()});
 document.getElementById('locate-me').addEventListener('click',locateUser);
