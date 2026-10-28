@@ -338,6 +338,58 @@
   .quick b{font-size:10px}
 }
 
+
+/* Ajuste de estrutura: reproduz a hierarquia do mockup em telas móveis */
+.daily-tip-card{display:none}
+@media(max-width:900px){
+  #view-inicio.active{display:flex;flex-direction:column;gap:13px}
+  #view-inicio>.columns{display:contents}
+  #view-inicio>.columns>.quick-panel{order:2;margin:0;padding:12px;border-radius:19px}
+  #view-inicio>.stats{order:3;margin:0}
+  #view-inicio>.daily-tip-card{order:4}
+  #view-inicio>.columns>section.panel:first-child{order:6;margin:0}
+  #view-inicio>.columns>section.panel:nth-child(2){order:5;margin:0}
+  #view-inicio>.section-title{order:7;margin:2px 0 -5px}
+  #view-inicio>.photo-grid{order:8}
+  #view-inicio>.impact-panel{order:9}
+  .hero{min-height:245px!important;border-radius:22px!important;background-image:linear-gradient(90deg,#003e32f2 0%,#05634bd9 54%,#075c3c35 100%),url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=85')!important;background-position:center!important;box-shadow:0 12px 28px #073f3522}
+  .hero:after{right:-30px;bottom:-105px;width:210px;height:210px;border-color:#ffffff35}
+  .hero h1{font-size:clamp(27px,5vw,36px)!important;max-width:520px}
+  .quick-panel .panel-head{margin-bottom:11px}
+  .quick-panel .quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .quick-panel .quick{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;min-width:0;min-height:112px!important;padding:12px!important;gap:8px!important;border:1px solid var(--line)!important;border-radius:17px!important;box-shadow:0 5px 15px #103d2b0b!important;text-align:left!important}
+  .quick-panel .quick-register{background:linear-gradient(145deg,#fff,#fff1ef)!important;color:#8c251e!important;border-color:#ffd8d2!important}
+  .quick-panel .quick-guide{background:linear-gradient(145deg,#fff,#effcf2)!important;color:#075c3e!important;border-color:#ccefd8!important}
+  .quick-panel .quick-map{background:linear-gradient(145deg,#fff,#eff7ff)!important;color:#125c91!important;border-color:#cfe9ff!important}
+  .quick-panel .quick-actions{background:linear-gradient(145deg,#fff,#f7f1ff)!important;color:#5533a6!important;border-color:#e4d7ff!important}
+  .quick-panel .quick-icon{display:grid!important;place-items:center;width:42px!important;height:42px!important;flex:0 0 42px!important;border-radius:14px!important;background:#ffffffc9!important;font-size:21px!important}
+  .quick-panel .quick b{font-size:12px!important;line-height:1.25}
+  .quick-panel .quick small{display:block!important;font-size:10px!important;line-height:1.3;color:var(--muted)!important}
+  .quick-panel .quick-quote{margin:11px 0 0}
+  .daily-tip-card{display:flex;align-items:center;gap:13px;min-height:124px;overflow:hidden;padding:15px;border-radius:19px;background:linear-gradient(120deg,#064b38,#07834f 65%,#8acb42);color:#fff;box-shadow:0 8px 22px #073f3519}
+  .tip-plant{display:grid;place-items:center;align-self:stretch;min-width:72px;border-radius:15px;background:radial-gradient(circle at 50% 38%,#c2f6a0,#48b96d 65%,#168454);font-size:43px}
+  .tip-copy{min-width:0}
+  .tip-copy>span{font-size:9px;font-weight:900;letter-spacing:1px;color:#d5ff8e}
+  .tip-copy h2{margin:3px 0 4px;font-size:15px;line-height:1.25}
+  .tip-copy p{margin:0 0 8px;font-size:11px;line-height:1.45;color:#e6f6ec}
+  .tip-copy button{padding:7px 10px;border:0;border-radius:18px;background:#b9f36a;color:#123d30;font-size:10px;font-weight:850}
+  .stat{box-shadow:0 5px 17px #103d2b0b}
+  .stat-top{font-size:10px}
+  .section-title h2{font-size:16px}
+}
+@media(max-width:600px){
+  #view-inicio.active{gap:11px}
+  #view-inicio>.hero{min-height:250px!important}
+  .quick-panel .quick{min-height:103px!important;padding:10px!important}
+  .quick-panel .quick-icon{width:38px!important;height:38px!important;flex-basis:38px!important}
+  .quick-panel .quick b{font-size:11px!important}
+  .quick-panel .quick small{font-size:9px!important}
+  .daily-tip-card{min-height:120px;padding:11px;gap:10px}
+  .tip-plant{min-width:60px;font-size:36px}
+  .tip-copy h2{font-size:13px}
+  .tip-copy p{font-size:10px}
+}
+
 </style>
 </head>
 <body>
@@ -370,15 +422,16 @@
     <article class="stat"><div class="stat-top">Em andamento <span class="stat-icon" style="background:#fff1d7">◷</span></div><div class="stat-num" id="stat-progress">0</div><div class="stat-foot">Relatos em acompanhamento</div></article>
     <article class="stat"><div class="stat-top">Pendentes <span class="stat-icon" style="background:#ffebeb">!</span></div><div class="stat-num" id="stat-pending">0</div><div class="stat-foot">Aguardando acompanhamento</div></article>
   </div>
+  <section class="daily-tip-card" aria-label="Dica ambiental do dia"><div class="tip-plant" aria-hidden="true">🌱</div><div class="tip-copy"><span>💡 DICA AMBIENTAL</span><h2>Pequenas atitudes fazem a diferença</h2><p>Reduza o uso de plástico, separe os resíduos e economize água sempre que puder.</p><button type="button" data-go="guia">Ver dicas sustentáveis <span aria-hidden="true">→</span></button></div></section>
   <div class="columns">
     <section class="panel"><div class="panel-head"><div><h2>Mapa ambiental</h2><span class="muted">Relatos com localização salva</span></div><button class="secondary" data-go="mapa">Ver mapa ↗</button></div><div class="mapmock"><div id="mini-map"></div></div><div class="legend"><span><i class="legend-dot" style="background:#df9a27"></i>Pendente</span><span><i class="legend-dot" style="background:#1685e8"></i>Em andamento</span><span><i class="legend-dot" style="background:#087f5b"></i>Resolvida</span></div></section>
     <section class="panel"><div class="panel-head"><div><h2>Últimas ocorrências</h2><span class="muted">Relatos recentes da comunidade</span></div><button class="secondary" data-go="ocorrencias">Ver todas →</button></div><div class="issue-list" id="recent-list"><div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div></div></section>
-    <section class="panel quick-panel"><div class="panel-head"><div><h2>Ações rápidas</h2><span class="muted">Participe da mudança</span></div></div><div class="quick-grid">
-      <button class="quick quick-register" data-go="registrar"><span class="quick-icon">🌿</span><span><b>Registrar ocorrência</b><small>Relate um problema ambiental</small></span></button>
-      <button class="quick quick-map" data-go="mapa"><span class="quick-icon">📍</span><span><b>Ver mapa</b><small>Explore os relatos localizados</small></span></button>
-      <button class="quick quick-guide" data-go="guia"><span class="quick-icon">📖</span><span><b>Guia sustentável</b><small>Dicas para o dia a dia</small></span></button>
-      <button class="quick quick-actions" data-go="acoes"><span class="quick-icon">👥</span><span><b>Ações comunitárias</b><small>Faça parte da comunidade</small></span></button>
-    </div><p class="quick-quote">“O futuro da nossa cidade começa com você!” 🌱</p></section>
+    <section class="panel quick-panel"><div class="panel-head"><div><h2>Acesse rapidamente</h2><span class="muted">O que você quer fazer hoje?</span></div></div><div class="quick-grid">
+      <button class="quick quick-register" data-go="registrar"><span class="quick-icon">⚠️</span><span><b>Denunciar ocorrência</b><small>Ajude a cuidar da cidade</small></span></button>
+      <button class="quick quick-guide" data-go="guia"><span class="quick-icon">🍃</span><span><b>Guia ambiental</b><small>Dicas para o dia a dia</small></span></button>
+      <button class="quick quick-map" data-go="conquistas"><span class="quick-icon">🏆</span><span><b>Conquistas</b><small>Acompanhe seu progresso</small></span></button>
+      <button class="quick quick-actions" data-go="acoes"><span class="quick-icon">👥</span><span><b>Ações comunitárias</b><small>Participe da comunidade</small></span></button>
+    </div><p class="quick-quote">“Juntos por uma cidade melhor!” 🌱</p></section>
   </div>
   <div class="section-title"><div><h2>Inspire-se para cuidar do planeta</h2><p>Natureza, reciclagem e energia limpa.</p></div></div>
   <div class="photo-grid">
