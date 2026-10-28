@@ -202,8 +202,8 @@ function renderPublicContents(){
 async function loadPublicContents(){
  if(!db||(!isAdmin&&!isMunicipalAdmin))return;
  try{
-  const snap=await db.collection('conteudosPublicos').get();
-  publicContents=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>isAdmin||x.municipioId===assignedMunicipalityId);
+  const snap=isAdmin?await db.collection('conteudosPublicos').get():await db.collection('conteudosPublicos').where('municipioId','==',assignedMunicipalityId).get();
+  publicContents=snap.docs.map(d=>({id:d.id,...d.data()}));
   renderPublicContents();refreshContentScope();
  }catch(err){console.error(err);$('public-content-list').innerHTML='<div class="empty">Não foi possível carregar conteúdos. Verifique as regras do Firestore para conteudosPublicos.</div>'}
 }
