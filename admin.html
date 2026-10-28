@@ -28,7 +28,7 @@
  <aside>
   <div class="brand"><div class="logo">🌿</div><div><b>EcoCidade<br>Inteligente</b><small>ADMINISTRAÇÃO GERAL</small></div></div>
   <nav class="nav" aria-label="Menu administrativo">
-   <button class="active" data-view="overview">📊 Visão geral</button><button data-view="fires">🔥 Queimadas INPE</button><button data-view="reports">📋 Ocorrências</button><button data-view="municipalities">🗺️ Municípios</button><button data-view="users">👥 Usuários e admins</button><button data-view="analytics">📈 Relatórios</button>
+   <button class="active" data-view="overview">📊 Visão geral</button><button data-view="content">✏️ Conteúdo público</button><button data-view="fires">🔥 Queimadas INPE</button><button data-view="reports">📋 Ocorrências</button><button data-view="municipalities">🗺️ Municípios</button><button data-view="users">👥 Usuários e admins</button><button data-view="analytics">📈 Relatórios</button>
   </nav>
   <div class="sidebar-note">🔐 Acesso administrativo restrito<br>Não compartilhe sua senha. As permissões também precisam ser protegidas pelas regras do Firestore.</div>
  </aside>
@@ -40,6 +40,25 @@
     <div class="section-head"><div><h2>Resumo ambiental</h2><p>Indicadores calculados a partir dos registros disponíveis no Firestore.</p></div></div>
     <div class="stats"><article class="stat"><small>Ocorrências registradas</small><strong id="stat-total">—</strong></article><article class="stat"><small>Pendentes</small><strong id="stat-pending">—</strong></article><article class="stat"><small>Em andamento</small><strong id="stat-progress">—</strong></article><article class="stat"><small>Resolvidas</small><strong id="stat-resolved">—</strong></article></div>
     <div class="grid2"><section class="card"><h3>Últimas ocorrências</h3><div id="recent-list" class="muted">Carregando…</div></section><section class="card"><h3>Acesso rápido</h3><p class="muted">Consulte os focos oficiais no INPE, atualize status dos relatos e mantenha a lista de municípios do sistema organizada.</p><div class="toolbar"><button class="btn primary" data-jump="fires">Abrir mapa INPE</button><button class="btn secondary" data-jump="reports">Gerenciar ocorrências</button><button class="btn secondary" data-jump="municipalities">Gerenciar municípios</button></div></section></div>
+   </section>
+
+   <section class="view" id="view-content">
+    <div class="section-head"><div><h2>Conteúdo do site público</h2><p>Publique, edite e personalize cartões do Guia Ambiental, Ações Comunitárias, Conquistas e apresentação do projeto.</p></div></div>
+    <div class="notice">Itens publicados aparecem no site dos visitantes. O administrador municipal gerencia conteúdo do município autorizado; o administrador geral pode publicar conteúdo geral ou municipal.</div>
+    <div class="grid2">
+     <form id="public-content-form" class="card">
+      <h3 id="content-form-title">Adicionar conteúdo</h3><input id="content-id" type="hidden">
+      <div class="field"><label for="content-section">Área do site</label><select id="content-section" required><option value="guia">Guia Ambiental</option><option value="acoes">Ações comunitárias</option><option value="conquistas">Conquistas e pontuação</option><option value="inicio">Apresentação do projeto</option></select></div>
+      <div class="field"><label for="content-title">Título</label><input id="content-title" maxlength="120" required placeholder="Título que os visitantes verão"></div>
+      <div class="field"><label for="content-description">Descrição</label><textarea id="content-description" maxlength="1800" rows="4" required placeholder="Escreva o conteúdo que será exibido no site"></textarea></div>
+      <div class="field"><label for="content-image">URL da imagem (opcional, https://)</label><input id="content-image" type="url" placeholder="https://..."></div>
+      <div class="form-row"><div class="field"><label for="content-color">Cor de destaque</label><input id="content-color" type="color" value="#087b55" style="height:44px;padding:4px"></div><div class="field"><label for="content-scope">Visibilidade</label><select id="content-scope"><option value="global">Geral — todos os visitantes</option></select></div></div>
+      <label style="display:flex;gap:8px;align-items:center;margin:8px 0 14px"><input id="content-published" type="checkbox" checked> Publicado no site público</label>
+      <div class="toolbar"><button class="btn primary" type="submit">Salvar conteúdo</button><button class="btn secondary hidden" id="content-cancel" type="button">Cancelar edição</button></div>
+      <p id="content-message" class="muted" role="status"></p>
+     </form>
+     <div class="card"><h3>Conteúdos cadastrados</h3><div class="toolbar"><select id="content-filter"><option value="">Todas as áreas</option><option value="guia">Guia Ambiental</option><option value="acoes">Ações comunitárias</option><option value="conquistas">Conquistas</option><option value="inicio">Apresentação</option></select></div><div id="public-content-list" class="muted">Carregando conteúdos…</div></div>
+    </div>
    </section>
    <section class="view" id="view-fires">
     <div class="section-head"><div><h2>Monitoramento de queimadas</h2><p>Visualização do portal oficial do Programa Queimadas / INPE.</p></div><a class="btn primary" href="https://data.inpe.br/queimadas/bdqueimadas/" target="_blank" rel="noopener noreferrer">Abrir no INPE ↗</a></div>
@@ -118,7 +137,7 @@ async function loadAll(){if((!isAdmin&&!isMunicipalAdmin)||!db)return;message('C
  const o=results[0].status==='fulfilled'?results[0].value:null,p=results[1].status==='fulfilled'?results[1].value:null,m=results[2].status==='fulfilled'?results[2].value:null,as=results[3].status==='fulfilled'?results[3].value:null;
  if(o)occurrences=o.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>dateMs(b.criadoEm||b.createdEm||b.created)-dateMs(a.criadoEm||a.createdEm||a.created));
  if(p)profiles=p.docs.map(d=>({id:d.id,...d.data()}));if(m)municipalities=m.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.nome||'').localeCompare(b.nome||'','pt-BR'));if(as)assignments=as.docs.map(d=>({id:d.id,...d.data()}));
- renderAll();if(isMunicipalAdmin){profiles=[];assignments=[];message('Painel municipal: '+occurrences.length+' ocorrência(s) do município autorizado.')}else if(errors.length){console.error(errors);message('Alguns dados não carregaram: '+errors.join(' | ')+'. Confira as regras do Firestore.',true)}else message('Dados atualizados: '+occurrences.length+' ocorrência(s), '+profiles.length+' perfil(is), '+municipalities.length+' município(s).')}
+ renderAll();await loadPublicContents();if(isMunicipalAdmin){profiles=[];assignments=[];message('Painel municipal: '+occurrences.length+' ocorrência(s) do município autorizado.')}else if(errors.length){console.error(errors);message('Alguns dados não carregaram: '+errors.join(' | ')+'. Confira as regras do Firestore.',true)}else message('Dados atualizados: '+occurrences.length+' ocorrência(s), '+profiles.length+' perfil(is), '+municipalities.length+' município(s).')}
 function renderAll(){const count=s=>occurrences.filter(o=>(o.status||'Pendente')===s).length;$('stat-total').textContent=occurrences.length;$('stat-pending').textContent=count('Pendente');$('stat-progress').textContent=occurrences.filter(o=>['Em andamento','Em análise'].includes(o.status)).length;$('stat-resolved').textContent=count('Resolvida');$('stat-cities').textContent=municipalities.length;$('stat-users').textContent=profiles.length;$('stat-updated').textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});renderRecent();renderOccurrences();renderUsers();renderMunicipalities();renderAnalytics()}
 function category(o){return o.categoria||o.category||o.titulo||'Outro problema ambiental'}function locationName(o){return o.local||o.place||'Local não informado'}function description(o){return o.descricao||o.description||''}
 function renderRecent(){$('recent-list').innerHTML=occurrences.slice(0,6).map(o=>'<article style="padding:10px 0;border-bottom:1px solid #edf2ee"><b>'+safe(category(o))+'</b><div class="muted">'+safe(locationName(o))+' · '+safe(dateText(o.criadoEm||o.createdEm||o.created))+'</div><span class="badge '+(o.status==='Resolvida'?'ok':o.status==='Em andamento'?'blue':'')+'">'+safe(o.status||'Pendente')+'</span></article>').join('')||'<div class="empty">Nenhuma ocorrência compartilhada.</div>'}
@@ -164,6 +183,52 @@ $('invite-form').addEventListener('submit',async e=>{
  }catch(err){console.error(err);$('invite-message').textContent='Não foi possível criar o convite. Verifique as regras do Firestore e a conexão.'}
 });
 $('copy-invite').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('invite-link').value);$('invite-message').textContent='Link copiado.'}catch(e){$('invite-link').select();document.execCommand('copy');$('invite-message').textContent='Tente copiar o link selecionado.'}});
+
+
+let publicContents=[];
+function contentSectionName(v){return ({guia:'Guia Ambiental',acoes:'Ações comunitárias',conquistas:'Conquistas e pontuação',inicio:'Apresentação do projeto'})[v]||v}
+function refreshContentScope(selected){
+ const el=$('content-scope');if(!el)return;
+ if(isMunicipalAdmin){el.innerHTML='<option value="municipal">Somente meu município</option>';el.value='municipal';el.disabled=true;return}
+ el.disabled=false;
+ el.innerHTML='<option value="global">Geral — todos os visitantes</option>'+municipalities.map(m=>'<option value="'+safe(m.id)+'">'+safe(m.nome||m.id)+' — '+safe(m.uf||'')+'</option>').join('');
+ if(selected&&[...el.options].some(o=>o.value===selected))el.value=selected;else el.value='global';
+}
+function renderPublicContents(){
+ const filter=$('content-filter').value;
+ const list=publicContents.filter(x=>!filter||x.secao===filter);
+ $('public-content-list').innerHTML=list.length?list.map(x=>'<article style="padding:12px 0;border-bottom:1px solid #edf2ee"><div style="display:flex;gap:8px;align-items:start"><span style="width:12px;height:12px;border-radius:50%;background:'+safe(x.cor||'#087b55')+';display:inline-block;margin-top:5px"></span><div style="flex:1;min-width:0"><b>'+safe(x.titulo||'Sem título')+'</b><div class="muted">'+safe(contentSectionName(x.secao))+' · '+(x.publicado?'Publicado':'Rascunho')+' · '+safe(x.municipioNome||'Geral')+'</div><p class="muted">'+safe((x.descricao||'').slice(0,180))+'</p></div></div><div class="toolbar"><button class="btn secondary" data-edit-content="'+safe(x.id)+'">Editar</button><button class="btn danger" data-delete-content="'+safe(x.id)+'">Excluir</button></div></article>').join(''):'<div class="empty">Nenhum conteúdo nesta área. Adicione um acima.</div>';
+}
+async function loadPublicContents(){
+ if(!db||(!isAdmin&&!isMunicipalAdmin))return;
+ try{
+  const snap=await db.collection('conteudosPublicos').get();
+  publicContents=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>isAdmin||x.municipioId===assignedMunicipalityId);
+  renderPublicContents();refreshContentScope();
+ }catch(err){console.error(err);$('public-content-list').innerHTML='<div class="empty">Não foi possível carregar conteúdos. Verifique as regras do Firestore para conteudosPublicos.</div>'}
+}
+function resetContentForm(){ $('public-content-form').reset();$('content-id').value='';$('content-color').value='#087b55';$('content-published').checked=true;$('content-form-title').textContent='Adicionar conteúdo';$('content-cancel').classList.add('hidden');$('content-message').textContent='';refreshContentScope(); }
+$('public-content-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(!currentUser||(!isAdmin&&!isMunicipalAdmin)||!db)return;
+ const id=$('content-id').value,secao=$('content-section').value,titulo=$('content-title').value.trim(),descricao=$('content-description').value.trim(),imagemURL=$('content-image').value.trim(),cor=$('content-color').value,publicado=$('content-published').checked;
+ if(imagemURL&&!/^https:\/\//i.test(imagemURL)){$('content-message').textContent='A imagem precisa usar um endereço https://';return}
+ const scope=isMunicipalAdmin?'municipal':$('content-scope').value;
+ const city=isMunicipalAdmin?municipalities.find(m=>m.id===assignedMunicipalityId):municipalities.find(m=>m.id===scope);
+ const municipioId=scope==='global'&&!isMunicipalAdmin?'global':(city?.id||assignedMunicipalityId||'global');
+ const municipioNome=scope==='global'&&!isMunicipalAdmin?'Geral':(city?.nome||'Município autorizado');
+ const payload={secao,titulo,descricao,imagemURL,cor,publicado,municipioId,municipioNome,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp(),atualizadoPor:currentUser.email};
+ try{
+  if(id){const old=publicContents.find(x=>x.id===id);if(!isAdmin&&old?.municipioId!==assignedMunicipalityId){$('content-message').textContent='Você não pode editar conteúdo de outro município.';return}await db.collection('conteudosPublicos').doc(id).set(payload,{merge:true})}
+  else await db.collection('conteudosPublicos').add({...payload,criadoEm:firebase.firestore.FieldValue.serverTimestamp(),criadoPor:currentUser.uid});
+  $('content-message').textContent='Conteúdo salvo. '+(publicado?'Será exibido aos visitantes após a atualização do site.':'Salvo como rascunho.');resetContentForm();await loadPublicContents()
+ }catch(err){console.error(err);$('content-message').textContent='Falha ao salvar. Confira as regras do Firestore para conteudosPublicos.'}
+});
+$('public-content-list').addEventListener('click',async e=>{
+ const edit=e.target.dataset.editContent,del=e.target.dataset.deleteContent;
+ if(edit){const x=publicContents.find(v=>v.id===edit);if(!x)return;$('content-id').value=x.id;$('content-section').value=x.secao||'guia';$('content-title').value=x.titulo||'';$('content-description').value=x.descricao||'';$('content-image').value=x.imagemURL||'';$('content-color').value=x.cor||'#087b55';$('content-published').checked=!!x.publicado;refreshContentScope(x.municipioId||'global');$('content-form-title').textContent='Editar conteúdo';$('content-cancel').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+ if(del&&confirm('Excluir este conteúdo publicado?')){const x=publicContents.find(v=>v.id===del);if(!x||(!isAdmin&&x.municipioId!==assignedMunicipalityId))return;try{await db.collection('conteudosPublicos').doc(del).delete();await loadPublicContents()}catch(err){console.error(err);$('content-message').textContent='Falha ao excluir. Confira as regras do Firestore.'}}
+});
+$('content-cancel').addEventListener('click',resetContentForm);$('content-filter').addEventListener('change',renderPublicContents);
 
 init();
 </script>
