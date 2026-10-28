@@ -187,6 +187,58 @@
   .feature { grid-template-columns:82px minmax(0,1fr); }
 }
 
+
+/* Refinamento mobile: leitura, toque, áreas seguras e prevenção de cortes */
+@media (max-width: 600px) {
+  body { font-size: 14px; -webkit-text-size-adjust: 100%; }
+  button, .primary, .secondary, input[type="checkbox"], input[type="radio"] { touch-action: manipulation; }
+  .topbar { position: relative; z-index: 30; }
+  .top-actions { min-width: 0; }
+  .top-actions > * { min-width: 0; }
+  .top-actions button { min-height: 40px; border-radius: 12px; }
+  .content { overflow-wrap: anywhere; }
+  .view > * { max-width: 100%; }
+  .hero { box-shadow: 0 12px 28px #073f3520; }
+  .hero .primary { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .stat, .panel, .quick, .feature, .report { box-shadow: 0 5px 16px #123d3510; }
+  .section-title { flex-wrap: wrap; }
+  .section-title > button, .section-title > a { min-height: 40px; }
+  .quick, .feature, .report, .panel, .stat { overflow-wrap: anywhere; }
+  .feature-img img, .photo img, .public-content img { max-width: 100%; height: auto; object-fit: cover; }
+  .field input, .field select, .field textarea, input, select, textarea { max-width: 100%; }
+  .field textarea { min-height: 110px; }
+  .field input, .field select, .field textarea { border-radius: 12px; }
+  .form-grid, .form-row { min-width: 0; }
+  .form-grid > *, .form-row > * { min-width: 0; }
+  .mapmock, #map, .leaflet-container { max-width: 100%; }
+  .leaflet-control-zoom a { width: 34px !important; height: 34px !important; line-height: 34px !important; }
+  .sidebar { padding-bottom: calc(5px + env(safe-area-inset-bottom)); }
+  .nav { scroll-snap-type: x proximity; }
+  .nav button { scroll-snap-align: start; min-height: 54px; border: 1px solid transparent; }
+  .nav button.active { border-color: #bde9ce; }
+  .content { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+  #view-registrar .primary, #view-registrar .secondary,
+  #view-perfil .primary, #view-perfil .secondary { min-height: 44px; }
+  .table-wrap, .table-responsive { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+@media (max-width: 380px) {
+  .topbar { align-items: center; }
+  .crumb { font-size: 10px; }
+  .crumb b { font-size: 13px; }
+  .top-actions button { padding: 7px 8px; font-size: 10px; }
+  .hero h1 { font-size: 25px; }
+  .stats { gap: 7px; }
+  .stat-top { font-size: 9px; }
+  .stat-num { font-size: 21px; }
+  .quick-panel .quick { min-height: 100px; }
+  .nav button { flex-basis: 68px !important; width: 68px !important; min-width: 68px !important; max-width: 68px; font-size: 8px; }
+}
+@media (max-width: 600px) and (orientation: landscape) {
+  .sidebar { max-height: calc(64px + env(safe-area-inset-bottom)); }
+  .nav button { min-height: 46px; }
+  .content { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+}
+
 </style>
 </head>
 <body>
