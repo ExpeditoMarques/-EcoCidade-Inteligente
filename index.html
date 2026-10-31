@@ -643,7 +643,7 @@ function startLiveReports(){
  if(!firestoreDb){console.warn('Firestore ainda não inicializado.');return}
  if(reportsUnsubscribe)reportsUnsubscribe();
  reportsUnsubscribe=firestoreDb.collection('ocorrencias').limit(300).onSnapshot(snap=>{
-  const cloud=snap.docs.map(d=>{const x=d.data();const created=x.criadoEm?.toDate?.().toISOString?.()||x.createdEm?.toDate?.().toISOString?.()||x.created||new Date().toISOString();return {id:d.id,category:x.categoria||x.category||x.titulo||'Outro problema ambiental',place:x.local||x.place||'',description:x.descricao||x.description||'',lat:x.latitude??x.lat??null,lng:x.longitude??x.lng??null,photo:'',status:x.status||'Pendente',created,cloud:true,ownerUid:x.ownerUid||null}});
+  const cloud=snap.docs.map(d=>{const x=d.data();const created=x.criadoEm?.toDate?.().toISOString?.()||x.createdEm?.toDate?.().toISOString?.()||x.created||new Date().toISOString();return {id:d.id,category:x.categoria||x.category||x.titulo||'Outro problema ambiental',place:x.local||x.place||'',description:x.descricao||x.description||'',lat:x.latitude??x.lat??null,lng:x.longitude??x.lng??null,photo:'',status:x.status||'Pendente',created,cloud:true,ownerUid:x.ownerUid||null,municipio:x.municipio||x.municipioNome||'',municipioId:x.municipioId||''}});
   cloud.sort((x,y)=>new Date(y.created)-new Date(x.created));
   const local=load(STORE,[]).filter(r=>!r.cloud);
   reports=[...cloud,...local];render();renderMap();renderMyReports();renderAchievements();
