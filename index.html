@@ -318,7 +318,7 @@
   <section class="daily-tip-card" aria-label="Dica ambiental do dia"><div class="tip-plant" aria-hidden="true">🌱</div><div class="tip-copy"><span>💡 DICA AMBIENTAL</span><h2>Pequenas atitudes fazem a diferença</h2><p>Reduza o uso de plástico, separe os resíduos e economize água sempre que puder.</p><button type="button" data-go="guia">Ver dicas sustentáveis <span aria-hidden="true">→</span></button></div></section>
   <div class="columns">
     <section class="panel"><div class="panel-head"><div><h2>Mapa ambiental</h2><span class="muted">Relatos com localização salva</span></div><button class="secondary" data-go="mapa">Ver mapa ↗</button></div><div class="mapmock"><div id="mini-map"></div></div><div class="legend"><span><i class="legend-dot" style="background:#df9a27"></i>Pendente</span><span><i class="legend-dot" style="background:#1685e8"></i>Em andamento</span><span><i class="legend-dot" style="background:#087f5b"></i>Resolvida</span></div></section>
-    <section class="panel"><div class="panel-head"><div><h2>Últimas ocorrências</h2><span class="muted">Relatos recentes da comunidade</span></div><button class="secondary" data-go="ocorrencias">Ver todas →</button></div><div class="issue-list" id="recent-list"><div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div></div></section>
+    <section class="panel"><div class="panel-head"><div><h2>Últimas ocorrências</h2><span class="muted" id="recent-subtitle">Relatos recentes de todos os municípios</span></div><button class="secondary" data-go="ocorrencias">Ver todas →</button></div><div class="field" style="margin:0 0 12px"><label for="home-municipality-filter">📍 Filtrar por município</label><select id="home-municipality-filter"><option value="">Todos os municípios</option></select></div><div class="issue-list" id="recent-list"><div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div></div></section>
     <section class="panel quick-panel"><div class="panel-head"><div><h2>Acesse rapidamente</h2><span class="muted">O que você quer fazer hoje?</span></div></div><div class="quick-grid">
       <button class="quick quick-register" data-go="registrar"><span class="quick-icon">⚠️</span><span><b>Denunciar ocorrência</b><small>Ajude a cuidar da cidade</small></span></button>
       <button class="quick quick-guide" data-go="guia"><span class="quick-icon">🍃</span><span><b>Guia ambiental</b><small>Dicas para o dia a dia</small></span></button>
@@ -629,7 +629,17 @@ document.getElementById('admin-filter')?.addEventListener('change',renderAdmin);
 document.getElementById('admin-report-list')?.addEventListener('change',async e=>{const id=e.target.dataset.adminStatus;if(!id||!authUser||!isAdmin||!firestoreDb)return;try{await firestoreDb.collection('ocorrencias').doc(id).update({status:e.target.value,atualizadoEm:firebase.firestore.FieldValue.serverTimestamp()});await renderAdmin();await loadCloudReports()}catch(err){alert('Não foi possível atualizar. Verifique as regras do Firestore.');renderAdmin()}});
 document.getElementById('admin-report-list')?.addEventListener('click',async e=>{const id=e.target.dataset.adminDelete;if(!id||!authUser||!isAdmin||!firestoreDb)return;if(!confirm('Excluir permanentemente esta ocorrência? Esta ação não pode ser desfeita.'))return;try{await firestoreDb.collection('ocorrencias').doc(id).delete();await renderAdmin();await loadCloudReports()}catch(err){alert('Não foi possível excluir. Verifique as regras do Firestore.')}});
 function typeIcon(t){if(/queimada/i.test(t))return '🔥';if(/água|rio|córrego|esgoto/i.test(t))return '💧';if(/árvore|verde/i.test(t))return '🌱';if(/lixo|descarte|resíduo/i.test(t))return '♻️';return '⚠️'}
-function renderRecent(){const el=document.getElementById('recent-list');const list=[...reports].reverse().slice(0,4);el.innerHTML=list.length?list.map(r=>'<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category)+'</b><small>'+escapeHtml(r.place||'Local não informado')+' · '+new Date(r.created).toLocaleDateString('pt-BR')+'</small></div><span class="tag '+(r.status==='Resolvida'?'':r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status)+'</span></div>').join(''):'<div class="empty">Ainda não há relatos. Seja a primeira pessoa a registrar uma ocorrência.</div>'}
+let homeMunicipalityFilter='';
+function renderHomeMunicipalityFilter(){
+ const select=document.getElementById('home-municipality-filter');if(!select)return;
+ const names=[...new Set(reports.map(r=>String(r.municipio||r.municipioNome||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+ const current=homeMunicipalityFilter;
+ select.innerHTML='<option value="">Todos os municípios ('+reports.length+')</option>'+names.map(name=>'<option value="'+escapeHtml(name)+'">'+escapeHtml(name)+' ('+reports.filter(r=>(r.municipio||r.municipioNome||'').trim()===name).length+')</option>').join('');
+ if(names.includes(current))select.value=current;else{homeMunicipalityFilter='';select.value=''}
+ const subtitle=document.getElementById('recent-subtitle');if(subtitle)subtitle.textContent=homeMunicipalityFilter?'Ocorrências registradas em '+homeMunicipalityFilter:'Relatos recentes de todos os municípios';
+}
+document.getElementById('home-municipality-filter')?.addEventListener('change',e=>{homeMunicipalityFilter=e.target.value;renderRecent();renderMap()});
+function renderRecent(){const el=document.getElementById('recent-list');if(!el)return;renderHomeMunicipalityFilter();const list=reports.filter(r=>!homeMunicipalityFilter||(r.municipio||r.municipioNome||'').trim()===homeMunicipalityFilter).sort((a,b)=>new Date(b.created||0)-new Date(a.created||0)).slice(0,4);el.innerHTML=list.length?list.map(r=>'<div class="issue"><div class="issue-icon">'+typeIcon(r.category)+'</div><div class="issue-info"><b>'+escapeHtml(r.category)+'</b><small>'+escapeHtml(r.municipio||r.municipioNome||'Município não informado')+' · '+escapeHtml(r.place||'Local não informado')+' · '+new Date(r.created).toLocaleDateString('pt-BR')+'</small></div><span class="tag '+(r.status==='Resolvida'?'':r.status==='Em andamento'?'blue':'')+'">'+escapeHtml(r.status)+'</span></div>').join(''):'<div class="empty">Não há ocorrências para este município ainda.</div>'}
 function renderMyReports(){
  const el=document.getElementById('my-reports-list');if(!el)return;
  if(!authUser){el.innerHTML='<p class="muted">Entre na sua conta para consultar suas ocorrências.</p>';return}
@@ -791,9 +801,11 @@ function renderMap(){
  });
  Object.values(maps).forEach(m=>{
   m.eachLayer(layer=>{if(layer instanceof L.Marker&&layer!==m._userMarker)m.removeLayer(layer)});
-  points.forEach(({point,report:r})=>{
-   L.marker(point).addTo(m).bindPopup('<b>'+escapeHtml(r.category)+'</b><br>'+escapeHtml(r.place||'Local não informado')+'<br>Status: '+escapeHtml(r.status));
+  const mapReports=m===maps['mini-map']&&homeMunicipalityFilter?points.filter(({report:r})=>(r.municipio||r.municipioNome||'').trim()===homeMunicipalityFilter):points;
+  mapReports.forEach(({point,report:r})=>{
+   L.marker(point).addTo(m).bindPopup('<b>'+escapeHtml(r.category)+'</b><br>'+escapeHtml(r.municipio||r.municipioNome||'Município não informado')+'<br>'+escapeHtml(r.place||'Local não informado')+'<br>Status: '+escapeHtml(r.status));
   });
+  if(m===maps['mini-map']&&homeMunicipalityFilter&&mapReports.length){m.fitBounds(mapReports.map(p=>p.point),{padding:[20,20],maxZoom:13})}
   if(userPosition){
    const coords=[userPosition,...nearby.map(r=>[Number(r.lat),Number(r.lng)])];
    if(coords.length>1)m.fitBounds(coords,{padding:[25,25],maxZoom:14});else m.setView(userPosition,14);
@@ -845,7 +857,7 @@ if(installButton)installButton.addEventListener('click',async()=>{if(!installPro
 window.addEventListener('appinstalled',()=>{if(installButton)installButton.hidden=true});
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Modo offline indisponível',err)));
 
-try{const sourceLogo=document.querySelector('.sidebar .brand-mark');const mobileLogo=document.getElementById('mobile-brand-logo');if(sourceLogo&&mobileLogo){const clone=sourceLogo.cloneNode(true);clone.classList.add('mobile-logo-mark');clone.removeAttribute('aria-label');clone.removeAttribute('role');mobileLogo.replaceChildren(clone)}initMap('mini-map');render();loadCloudReports();loadReportMunicipalities();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
+try{document.getElementById('home-municipality-filter')?.addEventListener('change',e=>{homeMunicipalityFilter=e.target.value;renderRecent();renderMap()});const sourceLogo=document.querySelector('.sidebar .brand-mark');const mobileLogo=document.getElementById('mobile-brand-logo');if(sourceLogo&&mobileLogo){const clone=sourceLogo.cloneNode(true);clone.classList.add('mobile-logo-mark');clone.removeAttribute('aria-label');clone.removeAttribute('role');mobileLogo.replaceChildren(clone)}initMap('mini-map');render();loadCloudReports();loadReportMunicipalities();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
 </script>
 </body></html>
 
