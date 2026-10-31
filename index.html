@@ -271,6 +271,18 @@
   .daily-tip-card .tip-copy button { min-height: 38px; padding: 8px 12px; font-size: 12px; }
 }
 
+
+/* Mapa e resumo municipal lado a lado */
+.occurrence-map-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,.8fr);gap:16px;align-items:start;margin:16px 0}
+.occurrence-map-layout>.panel{min-width:0;margin:0}
+.municipality-occurrences-panel{max-height:650px;overflow:auto}
+.municipality-occurrence-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #edf2ef}
+.municipality-occurrence-item:last-child{border-bottom:0}
+.municipality-occurrence-item b{display:block;color:var(--ink,#173d30);font-size:13px}
+.municipality-occurrence-item small{display:block;margin-top:4px;color:var(--muted);font-size:11px}
+.municipality-occurrence-count{display:grid;place-items:center;min-width:34px;height:34px;padding:0 8px;border-radius:11px;background:#e4f3e9;color:#176b43;font-weight:800}
+@media(max-width:850px){.occurrence-map-layout{grid-template-columns:minmax(0,1fr)}.municipality-occurrences-panel{max-height:none}}
+
 </style>
 </head>
 <body>
@@ -364,7 +376,10 @@
     <div class="panel" style="margin-top:16px;background:#f8fcf9;box-shadow:none"><div class="panel-head"><h2>Município selecionado</h2><span class="tag green" id="selected-city-state">Maranhão</span></div><div id="selected-city-summary">Escolha um município para preparar a consulta.</div><p class="muted">Fontes: <a href="https://www.inpe.br/queimadas/bdqueimadas/" target="_blank" rel="noopener">BDQueimadas / INPE</a> · <a href="https://servicodados.ibge.gov.br/api/v1/localidades/estados/MA/municipios" target="_blank" rel="noopener">Lista de municípios / IBGE</a></p></div>
   </div>
 </section>
-  <section class="panel"><div class="mapmock" style="height:470px"><div id="full-map"></div></div><div class="legend"><span><i class="legend-dot" style="background:#df9a27"></i>Pendente</span><span><i class="legend-dot" style="background:#1685e8"></i>Em andamento</span><span><i class="legend-dot" style="background:#087f5b"></i>Resolvida</span></div><p id="map-message" class="muted">Toque em “Usar minha localização” para centralizar o mapa e procurar ocorrências num raio de 10 km.</p><div id="nearby-list" class="issue-list"></div></section>
+  <div class="occurrence-map-layout">
+    <section class="panel occurrence-map-panel"><div class="panel-head"><div><h2>Ocorrências no mapa</h2><span class="muted">Localização dos relatos enviados pela comunidade</span></div></div><div class="mapmock" style="height:470px"><div id="full-map"></div></div><div class="legend"><span><i class="legend-dot" style="background:#df9a27"></i>Pendente</span><span><i class="legend-dot" style="background:#1685e8"></i>Em andamento</span><span><i class="legend-dot" style="background:#087f5b"></i>Resolvida</span></div><p id="map-message" class="muted">Toque em “Usar minha localização” para centralizar o mapa e procurar ocorrências num raio de 10 km.</p><div id="nearby-list" class="issue-list"></div></section>
+    <aside class="panel municipality-occurrences-panel"><div class="panel-head"><div><h2>Ocorrências por município</h2><span class="muted">Resumo atualizado em tempo real</span></div></div><div id="municipality-occurrence-list"><div class="empty">Carregando ocorrências…</div></div></aside>
+  </div>
   <div class="section-title"><div><div class="eyebrow">Monitoramento integrado</div><h2>Indicadores ambientais</h2><p>Consulte queimadas, qualidade do ar e recursos hídricos no mesmo lugar.</p></div></div>
   <section class="panel" id="sema-live-panel" style="margin-bottom:16px">
     <div class="panel-head"><div><h2>🛰️ Monitoramento oficial — Maranhão</h2><p class="muted">Acesse os canais oficiais da SEMA-MA e os focos de calor do INPE.</p></div><span class="tag red">Fontes oficiais</span></div>
@@ -757,6 +772,13 @@ function initMap(id){if(maps[id]||!document.getElementById(id)||!window.L)return
 function distanceKm(a,b){const rad=n=>n*Math.PI/180,R=6371,dLat=rad(b[0]-a[0]),dLon=rad(b[1]-a[1]),x=Math.sin(dLat/2)**2+Math.cos(rad(a[0]))*Math.cos(rad(b[0]))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
 function locateUser(){const msg=document.getElementById('map-message');if(!navigator.geolocation){if(msg)msg.textContent='Este navegador não oferece serviço de localização.';return}if(msg)msg.textContent='Aguardando sua permissão para acessar a localização…';navigator.geolocation.getCurrentPosition(pos=>{userPosition=[pos.coords.latitude,pos.coords.longitude];initMap('full-map');const map=maps['full-map'];if(map){map.setView(userPosition,14);if(map._userMarker)map.removeLayer(map._userMarker);map._userMarker=L.circleMarker(userPosition,{radius:9,color:'#fff',weight:3,fillColor:'#087f5b',fillOpacity:1}).addTo(map).bindPopup('Você está aqui').openPopup();map.invalidateSize()}renderMap();},err=>{const messages={1:'Permissão negada. Autorize a localização nas configurações do navegador e tente novamente.',2:'Não foi possível determinar sua localização. Verifique o GPS ou a conexão.',3:'A solicitação demorou demais. Tente novamente.'};if(msg)msg.textContent=messages[err.code]||'Não foi possível obter sua localização.';},{enableHighAccuracy:true,timeout:15000,maximumAge:60000})}
 function renderMap(){
+ const municipalityBox=document.getElementById('municipality-occurrence-list');
+ if(municipalityBox){
+  const groups={};
+  reports.forEach(r=>{const name=String(r.municipio||r.municipioNome||'Município não informado').trim()||'Município não informado';if(!groups[name])groups[name]={total:0,pending:0,progress:0,resolved:0};groups[name].total++;if(r.status==='Resolvida')groups[name].resolved++;else if(r.status==='Em andamento'||r.status==='Em análise')groups[name].progress++;else groups[name].pending++;});
+  const entries=Object.entries(groups).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'pt-BR'));
+  municipalityBox.innerHTML=entries.length?entries.map(([name,g])=>'<div class="municipality-occurrence-item"><div><b>'+escapeHtml(name)+'</b><small>'+g.pending+' pendente(s) · '+g.progress+' em andamento · '+g.resolved+' resolvida(s)</small></div><span class="municipality-occurrence-count">'+g.total+'</span></div>').join(''):'<div class="empty">Ainda não há ocorrências compartilhadas por município.</div>';
+ }
  if(!window.L)return;
  const points=[],nearby=[];
  const located=reports.filter(r=>r.lat!==null&&r.lat!==undefined&&r.lng!==null&&r.lng!==undefined&&r.lat!==''&&r.lng!=='');
