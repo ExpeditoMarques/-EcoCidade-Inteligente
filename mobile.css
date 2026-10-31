@@ -130,3 +130,92 @@
   .feature { grid-template-columns:82px minmax(0,1fr); }
 }
 @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+
+/* NOVA EXPERIÊNCIA MOBILE — visual inspirado no conceito aprovado.
+   Mantém os mesmos IDs, formulários, eventos e integrações existentes. */
+@media screen and (max-width:600px), screen and (pointer:coarse) and (max-width:600px) {
+  body { background:#edf6f0; }
+  .topbar {
+    min-height:72px;
+    padding:10px 12px;
+    background:linear-gradient(110deg,#063d32 0%,#087b59 100%);
+    box-shadow:0 5px 18px #063d3220;
+  }
+  .mobile-brand { gap:9px; }
+  .mobile-brand .mobile-logo-mark {
+    width:43px!important;height:43px!important;flex:0 0 43px!important;
+    border:2px solid #d5ff9b;border-radius:14px;
+    box-shadow:0 3px 12px #001f1838;
+  }
+  .mobile-brand strong { font-size:14px;letter-spacing:-.25px;color:#fff; }
+  .mobile-brand .brand-intel { color:#baf36b; }
+  .mobile-brand small { color:#e1f7e9;font-size:8px; }
+  .content { padding:12px 11px calc(94px + env(safe-area-inset-bottom)); }
+  .hero {
+    min-height:245px;
+    display:flex;align-items:flex-end;
+    padding:18px 16px;
+    border:0;border-radius:21px;overflow:hidden;
+    background-position:center;
+    box-shadow:0 12px 25px #064b3525;
+  }
+  .hero:before { background:linear-gradient(90deg,#032f29ed 0%,#064d39b8 58%,#063d3240 100%); }
+  .hero-copy { position:relative;z-index:1;max-width:92%; }
+  .hero .eyebrow {
+    display:inline-flex;padding:5px 9px;border-radius:99px;
+    background:#baf36b;color:#073f35;font-weight:850;font-size:9px;
+  }
+  .hero h1 { max-width:330px;margin:10px 0 7px;font-size:27px;line-height:1.12;color:#fff; }
+  .hero p { max-width:330px;color:#f0fff5;font-size:11px; }
+  .hero .primary {
+    min-height:42px;padding:10px 15px;border:0;border-radius:13px;
+    background:linear-gradient(110deg,#c4f66f,#4cda83);
+    color:#073f35;font-weight:850;box-shadow:0 5px 14px #001e1838;
+  }
+  .stats { gap:9px;margin:13px 0; }
+  .stat {
+    padding:12px;border:1px solid #e1eee6;border-radius:17px;
+    background:linear-gradient(145deg,#fff,#f8fcf9);
+    box-shadow:0 5px 16px #123d350d;
+  }
+  .stat-num { color:#08784c;font-weight:900; }
+  .quick-panel { padding:13px!important;border-radius:19px; }
+  .quick-panel .quick-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
+  .quick-panel .quick {
+    min-height:104px!important;display:flex;flex-direction:column;
+    align-items:flex-start;justify-content:center;gap:7px;
+    padding:12px!important;border:0;border-radius:16px;
+    color:#fff;box-shadow:0 5px 12px #123d351b;
+  }
+  .quick-panel .quick-icon {
+    width:35px!important;height:35px!important;flex-basis:35px!important;
+    display:grid;place-items:center;border-radius:11px;
+    background:#ffffff2b;color:#fff;font-size:19px;
+  }
+  .quick-panel .quick b { color:#fff;font-size:12px!important; }
+  .quick-panel .quick small { color:#ffffffdf;font-size:9px!important; }
+  .quick-register { background:linear-gradient(145deg,#ff624f,#df302d)!important; }
+  .quick-guide { background:linear-gradient(145deg,#27c879,#078451)!important; }
+  .quick-achievements { background:linear-gradient(145deg,#329cf5,#1768c5)!important; }
+  .quick-actions { background:linear-gradient(145deg,#ffbd32,#ee8a08)!important; }
+  .panel,.daily-tip-card,.issue-card { border-radius:17px; }
+  .daily-tip-card {
+    border:0;box-shadow:0 7px 18px #075b4520;
+    background:linear-gradient(110deg,#075b45,#07845b);
+  }
+  .section-title { margin-top:20px; }
+  .sidebar { padding-left:6px;padding-right:6px; }
+  .nav { gap:3px; }
+  .nav button {
+    flex-basis:69px!important;width:69px!important;min-width:69px!important;
+    min-height:57px;border-radius:13px;
+  }
+  .nav button.active { background:#e3f8e9;border-color:#bfe9cd;color:#08784c; }
+  .nav button[data-view="registrar"] {
+    color:#fff;background:linear-gradient(145deg,#16bd69,#078451);
+    border-color:#078451;box-shadow:0 4px 12px #07845138;
+  }
+  .nav button[data-view="registrar"] .ico { color:#fff;font-size:22px; }
+  .footer { padding-bottom:8px; }
+}
+
