@@ -54,7 +54,7 @@ service cloud.firestore {
         && (!('ownerUid' in request.resource.data.keys()) || (signedIn() && request.resource.data.ownerUid == request.auth.uid));
       allow update: if canManageOccurrence(resource.data)
         && request.resource.data.municipioId == resource.data.municipioId;
-      allow delete: if canManageOccurrence(resource.data);
+      allow delete: if isAdmin() || (isMunicipalAdmin() && resource.data.municipioId == assignedMunicipalityId()) || (signedIn() && resource.data.ownerUid == request.auth.uid);
     }
 
     function validInvite(token) {
