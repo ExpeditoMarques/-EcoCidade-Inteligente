@@ -196,7 +196,7 @@
   .quick-panel .quick small { color:#ffffffdf;font-size:9px!important; }
   .quick-register { background:linear-gradient(145deg,#ff624f,#df302d)!important; }
   .quick-guide { background:linear-gradient(145deg,#27c879,#078451)!important; }
-  .quick-achievements { background:linear-gradient(145deg,#329cf5,#1768c5)!important; }
+  .quick-map { background:linear-gradient(145deg,#329cf5,#1768c5)!important; }
   .quick-actions { background:linear-gradient(145deg,#ffbd32,#ee8a08)!important; }
   .panel,.daily-tip-card,.issue-card { border-radius:17px; }
   .daily-tip-card {
