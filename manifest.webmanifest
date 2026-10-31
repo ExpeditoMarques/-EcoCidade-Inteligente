@@ -1,28 +1,19 @@
 {
-  "id": "./",
   "name": "EcoCidade Inteligente",
   "short_name": "EcoCidade",
-  "description": "Tecnologia que cuida do planeta. Participe de uma cidade mais limpa e sustentável.",
+  "description": "Tecnologia que cuida do planeta",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#f2f8f4",
+  "background_color": "#f4f9f6",
   "theme_color": "#075b45",
-  "categories": ["environment", "education", "lifestyle"],
   "icons": [
     {
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }
