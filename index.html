@@ -806,7 +806,11 @@ function renderMap(){
    L.marker(point).addTo(m).bindPopup('<b>'+escapeHtml(r.category)+'</b><br>'+escapeHtml(r.municipio||r.municipioNome||'Município não informado')+'<br>'+escapeHtml(r.place||'Local não informado')+'<br>Status: '+escapeHtml(r.status));
   });
   if(m===maps['mini-map']&&homeMunicipalityFilter&&mapReports.length){m.fitBounds(mapReports.map(p=>p.point),{padding:[20,20],maxZoom:13})}
-  if(userPosition){
+  const visiblePoints=m===maps['mini-map']&&homeMunicipalityFilter?points.filter(({report:r})=>(r.municipio||r.municipioNome||'').trim()===homeMunicipalityFilter):points;
+  if(m===maps['mini-map']&&homeMunicipalityFilter){
+   if(visiblePoints.length===1)m.setView(visiblePoints[0].point,13);
+   else if(visiblePoints.length>1)m.fitBounds(visiblePoints.map(p=>p.point),{padding:[20,20],maxZoom:13});
+  }else if(userPosition){
    const coords=[userPosition,...nearby.map(r=>[Number(r.lat),Number(r.lng)])];
    if(coords.length>1)m.fitBounds(coords,{padding:[25,25],maxZoom:14});else m.setView(userPosition,14);
   }else if(points.length===1)m.setView(points[0].point,14);
@@ -857,7 +861,7 @@ if(installButton)installButton.addEventListener('click',async()=>{if(!installPro
 window.addEventListener('appinstalled',()=>{if(installButton)installButton.hidden=true});
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Modo offline indisponível',err)));
 
-try{document.getElementById('home-municipality-filter')?.addEventListener('change',e=>{homeMunicipalityFilter=e.target.value;renderRecent();renderMap()});const sourceLogo=document.querySelector('.sidebar .brand-mark');const mobileLogo=document.getElementById('mobile-brand-logo');if(sourceLogo&&mobileLogo){const clone=sourceLogo.cloneNode(true);clone.classList.add('mobile-logo-mark');clone.removeAttribute('aria-label');clone.removeAttribute('role');mobileLogo.replaceChildren(clone)}initMap('mini-map');render();loadCloudReports();loadReportMunicipalities();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
+try{const sourceLogo=document.querySelector('.sidebar .brand-mark');const mobileLogo=document.getElementById('mobile-brand-logo');if(sourceLogo&&mobileLogo){const clone=sourceLogo.cloneNode(true);clone.classList.add('mobile-logo-mark');clone.removeAttribute('aria-label');clone.removeAttribute('role');mobileLogo.replaceChildren(clone)}initMap('mini-map');render();loadCloudReports();loadReportMunicipalities();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
 </script>
 </body></html>
 
