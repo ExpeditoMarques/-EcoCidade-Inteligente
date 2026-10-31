@@ -940,26 +940,9 @@ document.getElementById('search-all').addEventListener('keydown',e=>{if(e.key===
 let installPromptEvent=null;
 const installButton=document.getElementById('install-app');
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPromptEvent=event;if(installButton)installButton.hidden=false});
-if(installButton)installButton.addEventListener('click',async()=>{
-  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
-  if(isStandalone){alert('O EcoCidade Inteligente já está instalado neste dispositivo.');return}
-  if(installPromptEvent){
-    try{await installPromptEvent.prompt();const choice=await installPromptEvent.userChoice;if(choice?.outcome==='accepted')installButton.hidden=true}
-    catch(err){console.warn('Não foi possível abrir a instalação automática:',err)}
-    installPromptEvent=null;return;
-  }
-  const ua=navigator.userAgent||'';
-  const isIOS=/iphone|ipad|ipod/i.test(ua);
-  const isSamsung=/SamsungBrowser/i.test(ua);
-  const isFirefox=/Firefox/i.test(ua);
-  let instructions='No Chrome ou Edge: toque no menu ⋮ e escolha “Instalar app” ou “Adicionar à tela inicial”.';
-  if(isIOS) instructions='No iPhone/iPad: abra este site no Safari, toque em Compartilhar (quadrado com seta para cima) e escolha “Adicionar à Tela de Início”.';
-  else if(isSamsung) instructions='No Samsung Internet: toque no menu ☰ e escolha “Adicionar página a” ou “Instalar aplicativo”.';
-  else if(isFirefox) instructions='No Firefox, a instalação como aplicativo pode não estar disponível. Abra este endereço no Chrome ou Edge e use o menu para instalar.';
-  alert(instructions+' Se a opção não aparecer, atualize a página e tente novamente. A instalação adiciona o aplicativo à tela inicial; não baixa um arquivo APK.');
-});
+if(installButton)installButton.addEventListener('click',async()=>{if(!installPromptEvent){alert('Para instalar, abra o menu do navegador e escolha “Instalar página” ou “Adicionar à tela inicial”, se essa opção estiver disponível.');return}installPromptEvent.prompt();await installPromptEvent.userChoice;installPromptEvent=null;installButton.hidden=true});
 window.addEventListener('appinstalled',()=>{if(installButton)installButton.hidden=true});
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(err=>console.warn('Modo offline indisponível',err)));
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Modo offline indisponível',err)));
 
 try{const sourceLogo=document.querySelector('.sidebar .brand-mark');const mobileLogo=document.getElementById('mobile-brand-logo');if(sourceLogo&&mobileLogo){const clone=sourceLogo.cloneNode(true);clone.classList.add('mobile-logo-mark');clone.removeAttribute('aria-label');clone.removeAttribute('role');mobileLogo.replaceChildren(clone)}initMap('mini-map');render();loadCloudReports();loadReportMunicipalities();if(profile.name)document.querySelector('.avatar').textContent=profile.name.charAt(0).toUpperCase()}catch(e){console.warn('Mapa indisponível',e)}
 </script>
