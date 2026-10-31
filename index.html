@@ -187,6 +187,90 @@
   .feature { grid-template-columns:82px minmax(0,1fr); }
 }
 
+
+/* Dica ambiental — cartão em destaque */
+.daily-tip-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 22px 0;
+  padding: 22px 24px;
+  overflow: hidden;
+  border: 1px solid #cfe7d7;
+  border-radius: 18px;
+  background: linear-gradient(115deg, #edf8f0 0%, #f8fcf8 62%, #e3f3e8 100%);
+  box-shadow: 0 8px 22px rgba(24, 92, 57, .08);
+}
+.daily-tip-card::after {
+  content: "";
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  right: -52px;
+  top: -82px;
+  border-radius: 50%;
+  background: rgba(105, 177, 123, .10);
+  pointer-events: none;
+}
+.daily-tip-card .tip-plant {
+  display: grid;
+  place-items: center;
+  flex: 0 0 66px;
+  width: 66px;
+  height: 66px;
+  border-radius: 20px;
+  background: #d9efdf;
+  font-size: 34px;
+  box-shadow: inset 0 0 0 1px rgba(30, 110, 64, .08);
+}
+.daily-tip-card .tip-copy { position: relative; z-index: 1; min-width: 0; }
+.daily-tip-card .tip-copy > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #287347;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .09em;
+}
+.daily-tip-card .tip-copy h2 {
+  margin: 8px 0 7px;
+  color: #164d35;
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.25;
+}
+.daily-tip-card .tip-copy p {
+  margin: 0 0 14px;
+  color: #456454;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.daily-tip-card .tip-copy button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  padding: 9px 15px;
+  border: 0;
+  border-radius: 10px;
+  background: #197447;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+.daily-tip-card .tip-copy button:hover { background: #105d37; transform: translateY(-1px); }
+@media (max-width: 600px) {
+  .daily-tip-card { gap: 12px; margin: 16px 0; padding: 17px 15px; border-radius: 15px; }
+  .daily-tip-card .tip-plant { flex-basis: 48px; width: 48px; height: 48px; border-radius: 14px; font-size: 27px; }
+  .daily-tip-card .tip-copy h2 { font-size: 17px; }
+  .daily-tip-card .tip-copy p { font-size: 13px; }
+  .daily-tip-card .tip-copy button { min-height: 38px; padding: 8px 12px; font-size: 12px; }
+}
+
 </style>
 </head>
 <body>
